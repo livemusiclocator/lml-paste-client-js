@@ -76,7 +76,7 @@
                 for (const line of lines.slice(1)) {
                     const [postcode, suburb] = line.split(',');
                     if (postcode && suburb) {
-                        postcodes[postcode] = suburb;
+                        postcodes[postcode.trim()] = suburb.trim();
                     }
                 }
             } catch (error) {
