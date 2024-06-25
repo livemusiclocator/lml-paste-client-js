@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Live Music Locator</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="public/styles.css">
 </head>
 <body>
     <h1>Live Music Locator</h1>
@@ -14,8 +14,8 @@
         <input type="date" id="date_to" name="date_to" required>
         <label for="style">Select Style:</label>
         <select id="style" name="style">
-            <option value="style1">Style 1</option>
-            <option value="style2">Style 2</option>
+            <option value="styles1.css">Style 1</option>
+            <option value="styles2.css">Style 2</option>
             <option value="facebook">Paste to Facebook</option>
         </select>
         <label for="timezone">Select Timezone:</label>
@@ -32,21 +32,18 @@
             <label><input type="checkbox" name="elements" value="time" checked> Time</label>
             <label><input type="checkbox" name="elements" value="description" checked> Description</label>
         </fieldset>
-        <button type="submit">Search</button>
+        <input type="submit" value="Search">
     </form>
 
-    <div id="results-container" style="display:none;">
-        <h2>Copy and paste your own gig guide. You can filter by venue or postcode.</h2>
+    <div id="results-container" style="display: none;">
         <h2 id="date-range"></h2>
-
         <label for="filter">Filter by Postcode/Suburb or Venue:</label>
         <select id="filter" onchange="filterGigs()">
             <option value="All">All</option>
         </select>
-
         <div id="gig-list"></div>
     </div>
 
-    <script src="scripts.js"></script>
+    <script src="public/script.js"></script>
 </body>
 </html>
