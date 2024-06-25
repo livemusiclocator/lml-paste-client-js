@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* Add some basic styling for the search button */
         #searchButton {
             background-color: #4CAF50;
             color: white;
@@ -38,37 +37,56 @@
 
     <script>
         const apiUrl = "https://api.lml.live/gigs/query?location=melbourne&date=today"; // Adjust API endpoint as needed
+        const postcodeApiUrl = 'http://v0.postcodeapi.com.au/suburbs/'; // Postcode API URL
         let gigs = [];
-        let postcodes = {};
+        let postcodes = {}; // This will hold cached postcodes
         let venues = new Set();
 
-        function fetchGigs() {
-            $.get(apiUrl, function(data) {
+        async function fetchPostcode(postcode) {
+            if (postcodes[postcode]) {
+                return postcodes[postcode];
+            }
+            try {
+                const response = await fetch(`${postcodeApiUrl}${postcode}.json`, {
+                    headers: { 'Accept': 'application/json; indent=4' }
+                });
+                const data = await response.json();
+                const suburb = data[0].name;
+                postcodes[postcode] = suburb;
+                return suburb;
+            } catch (error) {
+                console.error(`Failed to fetch postcode data for ${postcode}:`, error);
+                return 'Unknown Suburb';
+            }
+        }
+
+        async function fetchGigs() {
+            $.get(apiUrl, async function(data) {
                 gigs = data;
-                processGigs();
+                await processGigs();
                 populateFilters();
                 displayGigs();
             });
         }
 
-        function processGigs() {
-            gigs.forEach(gig => {
+        async function processGigs() {
+            for (const gig of gigs) {
                 const venue = gig.venue || {};
                 const address = venue.address || '';
                 const postcode = address.split(' ').pop();
                 if (postcode && !isNaN(postcode)) {
-                    postcodes[postcode] = address;
+                    postcodes[postcode] = await fetchPostcode(postcode);
                 }
                 venues.add(venue.name);
-            });
+            }
         }
 
         function populateFilters() {
             const filterSelect = $("#filter");
             filterSelect.empty();
             filterSelect.append(`<option value="All">All</option>`);
-            for (const [postcode, address] of Object.entries(postcodes)) {
-                filterSelect.append(`<option value="${postcode}">${postcode} - ${address.split(',')[1].trim()}</option>`);
+            for (const [postcode, suburb] of Object.entries(postcodes)) {
+                filterSelect.append(`<option value="${postcode}">${postcode} - ${suburb}</option>`);
             }
             venues.forEach(venue => {
                 filterSelect.append(`<option value="${venue}">${venue}</option>`);
