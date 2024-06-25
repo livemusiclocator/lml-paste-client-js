@@ -1,18 +1,16 @@
 {
-    "name": "lml-paste-js",
-    "version": "1.0.0",
-    "description": "A single-page app for creating paste-in gig guides.",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "dependencies": {
-      "express": "^4.17.1"
-    },
-    "engines": {
-      "node": "14.x"
-    },
-    "author": "YNicko",
-    "license": "MIT"
+  "name": "paste_client_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "path": "^0.12.7"
+  },
+  "engines": {
+    "node": "14.x"
   }
-  
+}
