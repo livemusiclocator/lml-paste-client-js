@@ -32,7 +32,7 @@ document.getElementById('search-form').addEventListener('submit', async function
         console.log('Venues:', venues);
 
         // Load suburb names from local file
-        const postcodesCsv = await fetch('public/vic_postcodes.csv').then(response => response.text());
+        const postcodesCsv = await fetch('/public/vic_postcodes.csv').then(response => response.text());
         console.log('Postcodes CSV:', postcodesCsv);
         const lines = postcodesCsv.split('\n');
         lines.forEach(line => {
