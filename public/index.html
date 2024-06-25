@@ -63,26 +63,24 @@
 
     <script>
         const apiUrl = "https://api.lml.live/gigs/query"; // Adjust API endpoint as needed
-        const postcodeApiUrl = 'http://v0.postcodeapi.com.au/suburbs/'; // Postcode API URL
+        const postcodeFileUrl = 'vic_postcodes.csv'; // Postcode CSV file URL
         let gigs = [];
         let postcodes = {}; // This will hold cached postcodes
         let venues = new Set();
 
-        async function fetchPostcode(postcode) {
-            if (postcodes[postcode]) {
-                return postcodes[postcode];
-            }
+        async function loadPostcodes() {
             try {
-                const response = await fetch(`${postcodeApiUrl}${postcode}.json`, {
-                    headers: { 'Accept': 'application/json; indent=4' }
-                });
-                const data = await response.json();
-                const suburb = data[0].name;
-                postcodes[postcode] = suburb;
-                return suburb;
+                const response = await fetch(postcodeFileUrl);
+                const data = await response.text();
+                const lines = data.split('\n');
+                for (const line of lines.slice(1)) {
+                    const [postcode, suburb] = line.split(',');
+                    if (postcode && suburb) {
+                        postcodes[postcode] = suburb;
+                    }
+                }
             } catch (error) {
-                console.error(`Failed to fetch postcode data for ${postcode}:`, error);
-                return 'Unknown Suburb';
+                console.error('Failed to load postcodes:', error);
             }
         }
 
@@ -108,7 +106,7 @@
                 const address = venue.address || '';
                 const postcode = address.split(' ').pop();
                 if (postcode && !isNaN(postcode)) {
-                    postcodes[postcode] = await fetchPostcode(postcode);
+                    postcodes[postcode] = postcodes[postcode] || 'Unknown Suburb';
                 }
                 venues.add(venue.name);
             }
@@ -198,7 +196,7 @@
         }
 
         $(document).ready(function() {
-            fetchGigs();
+            loadPostcodes().then(fetchGigs);
         });
     </script>
 </body>
