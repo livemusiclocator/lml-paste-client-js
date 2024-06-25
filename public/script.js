@@ -8,10 +8,12 @@ document.getElementById('search-form').addEventListener('submit', async function
     const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
     const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${dateFrom}&date_to=${dateTo}`;
+    console.log('Fetching gigs from:', url);
 
     try {
         const response = await fetch(url);
         const gigs = await response.json();
+        console.log('Gigs fetched:', gigs);
 
         // Get postcodes and venues present in the results
         const postcodes = {};
@@ -26,8 +28,12 @@ document.getElementById('search-form').addEventListener('submit', async function
             venues.add(venue.name || 'Unknown Venue');
         });
 
+        console.log('Postcodes:', postcodes);
+        console.log('Venues:', venues);
+
         // Load suburb names from local file
         const postcodesCsv = await fetch('public/vic_postcodes.csv').then(response => response.text());
+        console.log('Postcodes CSV:', postcodesCsv);
         const lines = postcodesCsv.split('\n');
         lines.forEach(line => {
             const [postcode, suburb] = line.split(',');
