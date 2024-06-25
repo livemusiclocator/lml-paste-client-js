@@ -1,40 +1,66 @@
-document.getElementById('searchForm').addEventListener('submit', async function(event) {
+document.getElementById('search-form').addEventListener('submit', async function(event) {
     event.preventDefault();
-    const date_from = document.getElementById('date_from').value;
-    const date_to = document.getElementById('date_to').value;
+
+    const dateFrom = document.getElementById('date_from').value;
+    const dateTo = document.getElementById('date_to').value;
     const style = document.getElementById('style').value;
     const timezone = document.getElementById('timezone').value;
     const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
-    const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${date_from}&date_to=${date_to}`;
-    const response = await fetch(url);
-    const gigs = await response.json();
+    const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${dateFrom}&date_to=${dateTo}`;
 
-    const postcodes = await loadPostcodes();
+    try {
+        const response = await fetch(url);
+        const gigs = await response.json();
 
-    displayGigs(gigs, elements, style, postcodes);
-    populateFilters(postcodes, gigs);
+        // Get postcodes and venues present in the results
+        const postcodes = {};
+        const venues = new Set();
+        gigs.forEach(gig => {
+            const venue = gig.venue || {};
+            const venueAddress = venue.address || '';
+            const venuePostcode = venueAddress.split(' ').pop();
+            if (!isNaN(venuePostcode)) {
+                postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
+            }
+            venues.add(venue.name || 'Unknown Venue');
+        });
+
+        // Load suburb names from local file
+        const postcodesCsv = await fetch('public/vic_postcodes.csv').then(response => response.text());
+        const lines = postcodesCsv.split('\n');
+        lines.forEach(line => {
+            const [postcode, suburb] = line.split(',');
+            if (postcodes[postcode]) {
+                postcodes[postcode] = suburb;
+            }
+        });
+
+        // Update the filter dropdown
+        const filter = document.getElementById('filter');
+        filter.innerHTML = '<option value="All">All</option>';
+        Object.keys(postcodes).forEach(postcode => {
+            filter.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
+        });
+        venues.forEach(venue => {
+            filter.innerHTML += `<option value="${venue}">${venue}</option>`;
+        });
+
+        // Display the results container
+        document.getElementById('results-container').style.display = 'block';
+        document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
+
+        // Display gigs
+        displayGigs(gigs, elements, style, timezone);
+    } catch (error) {
+        console.error('Failed to load gigs:', error);
+    }
 });
 
-async function loadPostcodes() {
-    const response = await fetch('https://raw.githubusercontent.com/Elkfox/Australian-Postcode-Data/master/au_postcodes.csv');
-    const data = await response.text();
-    const lines = data.split('\n');
-    const postcodes = {};
-
-    for (let i = 1; i < lines.length; i++) {
-        const [postcode, suburb, state, ,] = lines[i].split(',');
-        if (state === 'VIC') {
-            postcodes[postcode] = suburb;
-        }
-    }
-
-    return postcodes;
-}
-
-function displayGigs(gigs, elements, style, postcodes) {
+function displayGigs(gigs, elements, style, timezone) {
     const gigList = document.getElementById('gig-list');
     gigList.innerHTML = '';
+
     const groupedGigs = gigs.reduce((acc, gig) => {
         const date = gig.date;
         if (!acc[date]) {
@@ -45,47 +71,33 @@ function displayGigs(gigs, elements, style, postcodes) {
     }, {});
 
     for (const [date, gigs] of Object.entries(groupedGigs)) {
-        gigList.innerHTML += `<h2>${new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' })}</h2>`;
-        for (const gig of gigs) {
-            const time = gig.start_time && elements.includes('time') ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-            const address = gig.venue.address;
-            const postcode = address.split(' ').pop();
-            const suburb = postcodes[postcode] ? `${postcode} - ${postcodes[postcode]}` : 'Unknown Suburb';
-            gigList.innerHTML += `
-                <div class="gig">
-                    ${elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : ''}
-                    ${elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : ''}
-                    ${elements.includes('address') ? `<div class="gig-address">${address} (${suburb})</div>` : ''}
-                    ${time ? `<div class="gig-time">${time}</div>` : ''}
-                    ${elements.includes('description') ? `<div class="gig-description">${gig.description}</div>` : ''}
-                </div>
-            `;
-        }
+        const dateHeader = document.createElement('h2');
+        dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'long'
+        });
+        gigList.appendChild(dateHeader);
+
+        gigs.forEach(gig => {
+            const gigDiv = document.createElement('div');
+            gigDiv.className = 'gig';
+
+            const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
+            const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+            const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
+            const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
+            const description = elements.includes('description') ? `<div class="gig-description">${gig.description}</div>` : '';
+
+            gigDiv.innerHTML = `${name}${venueName}${address}${time}${description}`;
+            gigList.appendChild(gigDiv);
+        });
     }
 }
 
-function populateFilters(postcodes, gigs) {
-    const filterSelect = document.getElementById('filter');
-    filterSelect.innerHTML = '<option value="All">All</option>';
-    for (const [postcode, suburb] of Object.entries(postcodes)) {
-        filterSelect.innerHTML += `<option value="${postcode}">${postcode} - ${suburb}</option>`;
-    }
-    const venues = [...new Set(gigs.map(gig => gig.venue.name))];
-    for (const venue of venues) {
-        filterSelect.innerHTML += `<option value="${venue}">${venue}</option>`;
-    }
+function filterGigs() {
+    const filterValue = document.getElementById('filter').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('filter_value', filterValue);
+    window.location.search = urlParams.toString();
 }
-
-document.getElementById('filter').addEventListener('change', function() {
-    const filterValue = this.value;
-    const gigs = JSON.parse(sessionStorage.getItem('gigs'));
-    const elements = JSON.parse(sessionStorage.getItem('elements'));
-    const style = sessionStorage.getItem('style');
-    const postcodes = JSON.parse(sessionStorage.getItem('postcodes'));
-    const filteredGigs = gigs.filter(gig => {
-        const address = gig.venue.address;
-        const postcode = address.split(' ').pop();
-        return filterValue === 'All' || postcode === filterValue || gig.venue.name === filterValue;
-    });
-    displayGigs(filteredGigs, elements, style, postcodes);
-});
