@@ -3,48 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <title>Live Music Locator</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Add some basic styling for the search button */
+        #searchButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #searchButton:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <h1>Live Music Locator</h1>
-    <form id="search-form">
-        <label for="date_from">Date From:</label>
-        <input type="date" id="date_from" name="date_from" required>
-        <label for="date_to">Date To:</label>
-        <input type="date" id="date_to" name="date_to" required>
-        <label for="style">Select Style:</label>
-        <select id="style" name="style">
-            <option value="styles1.css">Style 1</option>
-            <option value="styles2.css">Style 2</option>
-            <option value="facebook">Paste to Facebook</option>
-        </select>
-        <label for="timezone">Select Timezone:</label>
-        <select id="timezone" name="timezone">
-            <option value="Australia/Sydney">AEST</option>
-            <option value="Australia/Adelaide">ACST</option>
-            <option value="Australia/Perth">AWST</option>
-        </select>
-        <fieldset>
-            <legend>Select Data Elements:</legend>
-            <label><input type="checkbox" name="elements" value="name" checked> Name</label>
-            <label><input type="checkbox" name="elements" value="venue" checked> Venue</label>
-            <label><input type="checkbox" name="elements" value="address" checked> Address</label>
-            <label><input type="checkbox" name="elements" value="time" checked> Time</label>
-            <label><input type="checkbox" name="elements" value="description" checked> Description</label>
-        </fieldset>
-        <input type="submit" value="Search">
-    </form>
-
     <h2>Copy and paste your own gig guide. You can filter by venue or postcode.</h2>
-    <h2 id="date-range-header"></h2>
-    
+    <h2 id="date-range"></h2>
+
     <label for="filter">Filter by Postcode/Suburb or Venue:</label>
     <select id="filter">
         <option value="All">All</option>
     </select>
 
+    <button id="searchButton" onclick="filterGigs()">Search</button>
+
     <div id="gig-list"></div>
 
-    <script src="/script.js"></script>
+    <script>
+        const apiUrl = "https://api.lml.live/gigs/query?location=melbourne&date=today"; // Adjust API endpoint as needed
+        let gigs = [];
+        let postcodes = {};
+        let venues = new Set();
+
+        function fetchGigs() {
+            $.get(apiUrl, function(data) {
+                gigs = data;
+                processGigs();
+                populateFilters();
+                displayGigs();
+            });
+        }
+
+        function processGigs() {
+            gigs.forEach(gig => {
+                const venue = gig.venue || {};
+                const address = venue.address || '';
+                const postcode = address.split(' ').pop();
+                if (postcode && !isNaN(postcode)) {
+                    postcodes[postcode] = address;
+                }
+                venues.add(venue.name);
+            });
+        }
+
+        function populateFilters() {
+            const filterSelect = $("#filter");
+            filterSelect.empty();
+            filterSelect.append(`<option value="All">All</option>`);
+            for (const [postcode, address] of Object.entries(postcodes)) {
+                filterSelect.append(`<option value="${postcode}">${postcode} - ${address.split(',')[1].trim()}</option>`);
+            }
+            venues.forEach(venue => {
+                filterSelect.append(`<option value="${venue}">${venue}</option>`);
+            });
+        }
+
+        function displayGigs(filteredGigs = gigs) {
+            const gigList = $("#gig-list");
+            gigList.empty();
+            let currentDate = null;
+            let groupedGigs = {};
+
+            filteredGigs.forEach(gig => {
+                const date = new Date(gig.date);
+                const formattedDate = date.toDateString();
+
+                if (!groupedGigs[formattedDate]) {
+                    groupedGigs[formattedDate] = [];
+                }
+                groupedGigs[formattedDate].push(gig);
+            });
+
+            for (const [date, gigs] of Object.entries(groupedGigs)) {
+                gigList.append(`<h2>${date}</h2>`);
+                gigs.forEach(gig => {
+                    const name = gig.name || 'No name';
+                    const venue = gig.venue || {};
+                    const venueName = venue.name || 'No venue';
+                    const address = venue.address || 'No address';
+                    const locationUrl = venue.location_url || '#';
+                    const time = gig.start_time ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'No time';
+                    const description = gig.description || '';
+
+                    gigList.append(`
+                        <div class="gig">
+                            <div class="gig-name">${name}</div>
+                            <div class="gig-venue"><a href="${locationUrl}">${venueName}</a></div>
+                            <div class="gig-address">${address}</div>
+                            <div class="gig-time">${time}</div>
+                            <div class="gig-description">${description}</div>
+                        </div>
+                    `);
+                });
+            }
+        }
+
+        function filterGigs() {
+            const filterValue = $("#filter").val();
+            if (filterValue === "All") {
+                displayGigs();
+            } else {
+                const filteredGigs = gigs.filter(gig => {
+                    const venue = gig.venue || {};
+                    const address = venue.address || '';
+                    const postcode = address.split(' ').pop();
+                    return venue.name === filterValue || postcode === filterValue;
+                });
+                displayGigs(filteredGigs);
+            }
+        }
+
+        $(document).ready(function() {
+            fetchGigs();
+        });
+    </script>
 </body>
 </html>
