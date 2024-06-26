@@ -91,12 +91,14 @@ document.addEventListener('DOMContentLoaded', function () {
         for (const [date, gigs] of Object.entries(groupedGigs)) {
             const dateHeader = document.createElement('h2');
             dateHeader.className = 'date-header';
+            dateHeader.dataset.date = date;
             dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
             gigList.appendChild(dateHeader);
 
             gigs.forEach(gig => {
                 const gigDiv = document.createElement('div');
                 gigDiv.className = 'gig';
+                gigDiv.dataset.date = date;
                 gigDiv.dataset.postcode = gig.venue.address.split(' ').pop();
                 gigDiv.dataset.venue = gig.venue.name;
 
