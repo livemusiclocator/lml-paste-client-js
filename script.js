@@ -60,11 +60,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.filterGigs = function () {
         const filterValue = document.getElementById('filter').value;
-        const gigList = document.getElementById('gig-list');
-        const gigs = Array.from(gigList.querySelectorAll('.gig'));
+        const gigs = document.querySelectorAll('.gig');
+
         gigs.forEach(gig => {
             if (filterValue === 'All' || gig.dataset.postcode === filterValue || gig.dataset.venue === filterValue) {
-                gig.style.display = '';
+                gig.style.display = 'block';
             } else {
                 gig.style.display = 'none';
             }
