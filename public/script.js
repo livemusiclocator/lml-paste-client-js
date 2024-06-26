@@ -72,14 +72,10 @@ function displayGigs(gigs, elements, facebookFormat, timezone) {
 
     for (const [date, gigs] of Object.entries(groupedGigs)) {
         if (facebookFormat) {
-            gigList.innerHTML += `<b>${new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' })}</b><br><br>`;
+            gigList.innerHTML += `<b>${new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' })}</b><br>`;
         } else {
             const dateHeader = document.createElement('h2');
-            dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', {
-                weekday: 'long',
-                day: '2-digit',
-                month: 'long'
-            });
+            dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
             gigList.appendChild(dateHeader);
         }
 
@@ -94,15 +90,14 @@ function displayGigs(gigs, elements, facebookFormat, timezone) {
                 const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
                 const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
                 const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
-                const description = elements.includes('description') ? `<div class="gig-description">${gig.description}</div>` : '';
 
-                gigDiv.innerHTML = `${name}${venueName}${address}${time}${description}`;
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
             }
         });
 
         if (facebookFormat) {
-            gigList.innerHTML += `<br><br>`;
+            gigList.innerHTML += `<br>`;
         }
     }
 }
