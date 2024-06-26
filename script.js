@@ -27,7 +27,7 @@ document.getElementById('search-form').addEventListener('submit', async function
         });
 
         // Load suburb names from local file
-        const postcodesCsv = await fetch('public/vic_postcodes.csv').then(response => response.text());
+        const postcodesCsv = await fetch('vic_postcodes.csv').then(response => response.text());
         const lines = postcodesCsv.split('\n');
         lines.forEach(line => {
             const [postcode, suburb] = line.split(',');
