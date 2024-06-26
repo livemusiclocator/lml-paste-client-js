@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 gig.style.display = 'none';
             }
         });
+
+        updateVisibleDates();
     };
 
     function displayGigs(gigs, elements, facebookFormat, timezone) {
@@ -87,43 +89,54 @@ document.addEventListener('DOMContentLoaded', function () {
         }, {});
 
         for (const [date, gigs] of Object.entries(groupedGigs)) {
-            if (facebookFormat) {
-                facebookText.value += `${boldText(new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' }))}\n\n`;
-            } else {
-                const dateHeader = document.createElement('h2');
-                dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
-                gigList.appendChild(dateHeader);
-            }
+            const dateHeader = document.createElement('h2');
+            dateHeader.className = 'date-header';
+            dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
+            gigList.appendChild(dateHeader);
 
             gigs.forEach(gig => {
-                if (facebookFormat) {
-                    facebookText.value += `${boldText(gig.name)}\n${gig.venue.name}\n${gig.venue.address}\n${gig.start_time ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}\n\n`;
-                } else {
-                    const gigDiv = document.createElement('div');
-                    gigDiv.className = 'gig';
-                    gigDiv.dataset.postcode = gig.venue.address.split(' ').pop();
-                    gigDiv.dataset.venue = gig.venue.name;
+                const gigDiv = document.createElement('div');
+                gigDiv.className = 'gig';
+                gigDiv.dataset.postcode = gig.venue.address.split(' ').pop();
+                gigDiv.dataset.venue = gig.venue.name;
 
-                    const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
-                    const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
-                    const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
-                    const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
+                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
+                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
+                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
 
-                    gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
-                    gigList.appendChild(gigDiv);
-                }
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
+                gigList.appendChild(gigDiv);
             });
-
-            if (facebookFormat) {
-                facebookText.value += `\n`;
-            }
         }
+
+        updateVisibleDates();
 
         if (facebookFormat) {
             document.getElementById('facebook-container').style.display = 'block';
         } else {
             document.getElementById('facebook-container').style.display = 'none';
         }
+    }
+
+    function updateVisibleDates() {
+        const gigList = document.getElementById('gig-list');
+        const dateHeaders = gigList.querySelectorAll('.date-header');
+
+        dateHeaders.forEach(header => {
+            let nextElement = header.nextElementSibling;
+            let hasVisibleGig = false;
+
+            while (nextElement && nextElement.classList.contains('gig')) {
+                if (nextElement.style.display !== 'none') {
+                    hasVisibleGig = true;
+                    break;
+                }
+                nextElement = nextElement.nextElementSibling;
+            }
+
+            header.style.display = hasVisibleGig ? 'block' : 'none';
+        });
     }
 
     function boldText(text) {
