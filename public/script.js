@@ -8,12 +8,10 @@ document.getElementById('search-form').addEventListener('submit', async function
     const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
     const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${dateFrom}&date_to=${dateTo}`;
-    console.log('Fetching gigs from:', url);
 
     try {
         const response = await fetch(url);
         const gigs = await response.json();
-        console.log('Gigs fetched:', gigs);
 
         // Get postcodes and venues present in the results
         const postcodes = {};
@@ -28,12 +26,8 @@ document.getElementById('search-form').addEventListener('submit', async function
             venues.add(venue.name || 'Unknown Venue');
         });
 
-        console.log('Postcodes:', postcodes);
-        console.log('Venues:', venues);
-
         // Load suburb names from local file
-        const postcodesCsv = await fetch('/public/vic_postcodes.csv').then(response => response.text());
-        console.log('Postcodes CSV:', postcodesCsv);
+        const postcodesCsv = await fetch('public/vic_postcodes.csv').then(response => response.text());
         const lines = postcodesCsv.split('\n');
         lines.forEach(line => {
             const [postcode, suburb] = line.split(',');
@@ -101,9 +95,33 @@ function displayGigs(gigs, elements, style, timezone) {
     }
 }
 
+document.getElementById('filter').addEventListener('change', filterGigs);
+
 function filterGigs() {
     const filterValue = document.getElementById('filter').value;
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('filter_value', filterValue);
-    window.location.search = urlParams.toString();
+    const gigList = document.getElementById('gig-list');
+    const gigs = Array.from(gigList.children).filter(child => child.className === 'gig');
+
+    gigs.forEach(gig => {
+        const address = gig.querySelector('.gig-address').textContent;
+        const venue = gig.querySelector('.gig-venue a').textContent;
+        const postcode = address.split(' ').pop();
+
+        if (filterValue === 'All' || filterValue === venue || filterValue === postcode) {
+            gig.style.display = 'block';
+        } else {
+            gig.style.display = 'none';
+        }
+    });
+
+    // Hide date headers if no gigs are shown
+    const dateHeaders = Array.from(gigList.children).filter(child => child.tagName === 'H2');
+    dateHeaders.forEach(header => {
+        const nextElement = header.nextElementSibling;
+        if (nextElement && nextElement.className === 'gig' && nextElement.style.display === 'block') {
+            header.style.display = 'block';
+        } else {
+            header.style.display = 'none';
+        }
+    });
 }
