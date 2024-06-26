@@ -60,7 +60,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayGigs(gigs, elements, facebookFormat, timezone) {
         const gigList = document.getElementById('gig-list');
+        const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
+        facebookText.value = '';
 
         const groupedGigs = gigs.reduce((acc, gig) => {
             const date = gig.date;
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (const [date, gigs] of Object.entries(groupedGigs)) {
             if (facebookFormat) {
-                gigList.innerHTML += `<b>${new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' })}</b><br>`;
+                facebookText.value += `${boldText(new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' }))}\n\n`;
             } else {
                 const dateHeader = document.createElement('h2');
                 dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
@@ -82,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             gigs.forEach(gig => {
                 if (facebookFormat) {
-                    gigList.innerHTML += `<b>${gig.name}</b><br>${gig.venue.name}<br>${gig.venue.address}<br>${gig.start_time ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}<br><br>`;
+                    facebookText.value += `${boldText(gig.name)}\n${gig.venue.name}\n${gig.venue.address}\n${gig.start_time ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}\n\n`;
                 } else {
                     const gigDiv = document.createElement('div');
                     gigDiv.className = 'gig';
@@ -98,15 +100,20 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (facebookFormat) {
-                gigList.innerHTML += `<br>`;
+                facebookText.value += `\n`;
             }
+        }
+
+        if (facebookFormat) {
+            document.getElementById('facebook-container').style.display = 'block';
+        } else {
+            document.getElementById('facebook-container').style.display = 'none';
         }
     }
 
-    function filterGigs() {
-        const filterValue = document.getElementById('filter').value;
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('filter_value', filterValue);
-        window.location.search = urlParams.toString();
-    }
-});
+    function boldText(text) {
+        const boldMap = {
+            'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟',
+            'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥', 'S': '𝗦', 'T': '𝗧', 'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫',
+            'Y': '𝗬', 'Z': '𝗭', 'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷',
+            'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽', 'q': '𝗾', 'r': '𝗿', 's': '
