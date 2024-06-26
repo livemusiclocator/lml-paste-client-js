@@ -10,28 +10,29 @@
     <h1>Live Music Locator</h1>
     <form id="search-form">
         <label for="date_from">Date From:</label>
-        <input type="date" id="date_from" name="date_from" required>
+        <input type="date" id="date_from" name="date_from">
         <br>
         <label for="date_to">Date To:</label>
-        <input type="date" id="date_to" name="date_to" required>
+        <input type="date" id="date_to" name="date_to">
         <br>
         <label for="facebook_format">Format for Facebook:</label>
         <input type="checkbox" id="facebook_format" name="facebook_format">
         <br>
         <label for="timezone">Select Timezone:</label>
         <select id="timezone" name="timezone">
-            <option value="Australia/Sydney">AEST</option>
-            <!-- Add other timezones if needed -->
+            <option value="AEST">AEST</option>
+            <option value="AEDT">AEDT</option>
         </select>
         <br>
         <label>Select Data Elements:</label>
-        <input type="checkbox" name="elements" value="name" checked> Name
-        <input type="checkbox" name="elements" value="venue" checked> Venue
-        <input type="checkbox" name="elements" value="address" checked> Address
-        <input type="checkbox" name="elements" value="time" checked> Time
+        <label><input type="checkbox" name="elements" value="name" checked> Name</label>
+        <label><input type="checkbox" name="elements" value="venue" checked> Venue</label>
+        <label><input type="checkbox" name="elements" value="address" checked> Address</label>
+        <label><input type="checkbox" name="elements" value="time" checked> Time</label>
         <br>
         <button type="submit">Search</button>
     </form>
+
     <div id="results-container" style="display: none;">
         <h2 id="date-range"></h2>
         <label for="filter">Filter by Postcode/Suburb or Venue:</label>
@@ -40,10 +41,12 @@
         </select>
         <div id="gig-list"></div>
     </div>
+
     <div id="facebook-container" style="display: none;">
-        <h2>Formatted for Facebook</h2>
+        <h2>Facebook Format</h2>
         <textarea id="facebook-text" rows="10" cols="50"></textarea>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
