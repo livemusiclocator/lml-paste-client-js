@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateVisibleDates();
 
         if (facebookFormat) {
+            formatForFacebook();
             document.getElementById('facebook-container').style.display = 'block';
         } else {
             document.getElementById('facebook-container').style.display = 'none';
@@ -140,6 +141,32 @@ document.addEventListener('DOMContentLoaded', function () {
             header.style.display = hasVisibleGig ? 'block' : 'none';
         });
     }
+
+    window.formatForFacebook = function () {
+        const gigs = document.querySelectorAll('.gig');
+        const facebookText = document.getElementById('facebook-text');
+        facebookText.value = '';
+
+        let currentHeader = '';
+        gigs.forEach(gig => {
+            if (gig.style.display !== 'none') {
+                const dateHeader = gig.previousElementSibling;
+                if (dateHeader && dateHeader.classList.contains('date-header')) {
+                    if (currentHeader !== dateHeader.textContent) {
+                        currentHeader = dateHeader.textContent;
+                        facebookText.value += `${boldText(currentHeader)}\n\n`;
+                    }
+                }
+
+                const name = gig.querySelector('.gig-name') ? gig.querySelector('.gig-name').textContent : '';
+                const venueName = gig.querySelector('.gig-venue') ? gig.querySelector('.gig-venue').textContent : '';
+                const address = gig.querySelector('.gig-address') ? gig.querySelector('.gig-address').textContent : '';
+                const time = gig.querySelector('.gig-time') ? gig.querySelector('.gig-time').textContent : '';
+
+                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
+            }
+        });
+    };
 
     function boldText(text) {
         const boldMap = {

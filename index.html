@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Music Locator</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 <body>
+    <header>
+        <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
+    </header>
+
     <h1>Live Music Locator</h1>
     <form id="search-form">
         <label for="date_from">Date From:</label>
@@ -41,13 +45,18 @@
             <option value="All">All</option>
         </select>
         <div id="gig-list"></div>
+        <button id="format-facebook-btn" onclick="formatForFacebook()">Format for Facebook</button>
     </div>
     
-    <div id="facebook-container" style="display: none;">
+    <div id="facebook-container">
         <h3>Facebook Formatted Text</h3>
         <textarea id="facebook-text" rows="10" cols="50"></textarea>
     </div>
+
+    <footer>
+        <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
+    </footer>
     
-    <script src="script.js"></script>
+    <script src="script.js?v=1.0"></script>
 </body>
 </html>
