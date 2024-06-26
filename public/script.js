@@ -3,7 +3,7 @@ document.getElementById('search-form').addEventListener('submit', async function
 
     const dateFrom = document.getElementById('date_from').value;
     const dateTo = document.getElementById('date_to').value;
-    const style = document.getElementById('style').value;
+    const facebookFormat = document.getElementById('facebook_format').checked;
     const timezone = document.getElementById('timezone').value;
     const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
@@ -51,13 +51,13 @@ document.getElementById('search-form').addEventListener('submit', async function
         document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
 
         // Display gigs
-        displayGigs(gigs, elements, style, timezone);
+        displayGigs(gigs, elements, facebookFormat, timezone);
     } catch (error) {
         console.error('Failed to load gigs:', error);
     }
 });
 
-function displayGigs(gigs, elements, style, timezone) {
+function displayGigs(gigs, elements, facebookFormat, timezone) {
     const gigList = document.getElementById('gig-list');
     gigList.innerHTML = '';
 
@@ -71,57 +71,45 @@ function displayGigs(gigs, elements, style, timezone) {
     }, {});
 
     for (const [date, gigs] of Object.entries(groupedGigs)) {
-        const dateHeader = document.createElement('h2');
-        dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', {
-            weekday: 'long',
-            day: '2-digit',
-            month: 'long'
-        });
-        gigList.appendChild(dateHeader);
+        if (facebookFormat) {
+            gigList.innerHTML += `<b>${new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' })}</b><br><br>`;
+        } else {
+            const dateHeader = document.createElement('h2');
+            dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long'
+            });
+            gigList.appendChild(dateHeader);
+        }
 
         gigs.forEach(gig => {
-            const gigDiv = document.createElement('div');
-            gigDiv.className = 'gig';
+            if (facebookFormat) {
+                gigList.innerHTML += `<b>${gig.name}</b><br>${gig.venue.name}<br>${gig.venue.address}<br>${gig.start_time ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}<br><br>`;
+            } else {
+                const gigDiv = document.createElement('div');
+                gigDiv.className = 'gig';
 
-            const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
-            const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
-            const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
-            const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
-            const description = elements.includes('description') ? `<div class="gig-description">${gig.description}</div>` : '';
+                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
+                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
+                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
+                const description = elements.includes('description') ? `<div class="gig-description">${gig.description}</div>` : '';
 
-            gigDiv.innerHTML = `${name}${venueName}${address}${time}${description}`;
-            gigList.appendChild(gigDiv);
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}${description}`;
+                gigList.appendChild(gigDiv);
+            }
         });
+
+        if (facebookFormat) {
+            gigList.innerHTML += `<br><br>`;
+        }
     }
 }
 
-document.getElementById('filter').addEventListener('change', filterGigs);
-
 function filterGigs() {
     const filterValue = document.getElementById('filter').value;
-    const gigList = document.getElementById('gig-list');
-    const gigs = Array.from(gigList.children).filter(child => child.className === 'gig');
-
-    gigs.forEach(gig => {
-        const address = gig.querySelector('.gig-address').textContent;
-        const venue = gig.querySelector('.gig-venue a').textContent;
-        const postcode = address.split(' ').pop();
-
-        if (filterValue === 'All' || filterValue === venue || filterValue === postcode) {
-            gig.style.display = 'block';
-        } else {
-            gig.style.display = 'none';
-        }
-    });
-
-    // Hide date headers if no gigs are shown
-    const dateHeaders = Array.from(gigList.children).filter(child => child.tagName === 'H2');
-    dateHeaders.forEach(header => {
-        const nextElement = header.nextElementSibling;
-        if (nextElement && nextElement.className === 'gig' && nextElement.style.display === 'block') {
-            header.style.display = 'block';
-        } else {
-            header.style.display = 'none';
-        }
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('filter_value', filterValue);
+    window.location.search = urlParams.toString();
 }

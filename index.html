@@ -1,48 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Live Music Locator</title>
-    <link rel="stylesheet" href="/public/styles.css">
-</head>
-<body>
-    <h1>Live Music Locator</h1>
-    <form id="search-form">
-        <label for="date_from">Date From:</label>
-        <input type="date" id="date_from" name="date_from" required>
-        <label for="date_to">Date To:</label>
-        <input type="date" id="date_to" name="date_to" required>
-        <label for="style">Select Style:</label>
-        <select id="style" name="style">
-            <option value="styles1.css">Style 1</option>
-            <option value="styles2.css">Style 2</option>
-            <option value="facebook">Paste to Facebook</option>
-        </select>
-        <label for="timezone">Select Timezone:</label>
-        <select id="timezone" name="timezone">
-            <option value="Australia/Sydney">AEST</option>
-            <option value="Australia/Adelaide">ACST</option>
-            <option value="Australia/Perth">AWST</option>
-        </select>
-        <fieldset>
-            <legend>Select Data Elements:</legend>
-            <label><input type="checkbox" name="elements" value="name" checked> Name</label>
-            <label><input type="checkbox" name="elements" value="venue" checked> Venue</label>
-            <label><input type="checkbox" name="elements" value="address" checked> Address</label>
-            <label><input type="checkbox" name="elements" value="time" checked> Time</label>
-        </fieldset>
-        <input type="submit" value="Search">
-    </form>
+document.getElementById('search-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
 
-    <div id="results-container" style="display: none;">
-        <h2 id="date-range"></h2>
-        <label for="filter">Filter by Postcode/Suburb or Venue:</label>
-        <select id="filter" onchange="filterGigs()">
-            <option value="All">All</option>
-        </select>
-        <div id="gig-list"></div>
-    </div>
+    const dateFrom = document.getElementById('date_from').value;
+    const dateTo = document.getElementById('date_to').value;
+    const facebookFormat = document.getElementById('facebook_format').checked;
+    const timezone = document.getElementById('timezone').value;
+    const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
-    <script src="/public/script.js"></script>
-</body>
-</html>
+    const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${dateFrom}&date_to=${dateTo}`;
+
+    try {
+        const response = await fetch(url);
+        const gigs = await response.json();
+
+        // Get postcodes and venues present in the results
+        const postcodes = {};
+        const venues = new Set();
+        gigs.forEach(gig => {
+            const venue = gig.venue || {};
+            const venueAddress = venue.address || '';
+            const venuePostcode = venueAddress.split(' ').pop();
+            if (!isNaN(venuePostcode)) {
+                postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
+            }
+            venues.add(venue.name || 'Unknown Venue');
+        });
+
+        // Load suburb names from local file
+        const postcodesCsv = await fetch('public/vic_postcodes.csv').then(response => response.text());
+        const lines = postcodesCsv.split('\n');
+        lines.forEach(line => {
+            const [postcode, suburb] = line.split(',');
+            if (postcodes[postcode]) {
+                postcodes[postcode] = suburb;
+            }
+        });
+
+        // Update the filter dropdown
+        const filter = document.getElementById('filter');
+        filter.innerHTML = '<option value="All">All</option>';
+        Object.keys(postcodes).forEach(postcode => {
+            filter.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
+        });
+        venues.forEach(venue => {
+            filter.innerHTML += `<option value="${venue}">${venue}</option>`;
+        });
+
+        // Display the results container
+        document.getElementById('results-container').style.display = 'block';
+        document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
+
+        // Display gigs
+        displayGigs(gigs, elements, facebookFormat, timezone);
+    } catch (error) {
+        console.error('Failed to load gigs:', error);
+    }
+});
+
+function displayGigs(gigs, elements, facebookFormat, timezone) {
+    const gigList = document.getElementById('gig-list');
+    gigList.innerHTML = '';
+
+    const groupedGigs = gigs.reduce((acc, gig) => {
+        const date = gig.date;
+        if (!acc[date]) {
+            acc[date] = [];
+        }
+        acc[date].push(gig);
+        return acc;
+    }, {});
+
+    for (const [date, gigs] of Object.entries(groupedGigs)) {
+        if (facebookFormat) {
+            gigList.innerHTML += `<b>${new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' })}</b><br><br>`;
+        } else {
+            const dateHeader = document.createElement('h2');
+            dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long'
+            });
+            gigList.appendChild(dateHeader);
+        }
+
+        gigs.forEach(gig => {
+            if (facebookFormat) {
+                gigList.innerHTML += `<b>${gig.name}</b><br>${gig.venue.name}<br>${gig.venue.address}<br>${gig.start_time ? new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}<br><br>`;
+            } else {
+                const gigDiv = document.createElement('div');
+                gigDiv.className = 'gig';
+
+                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
+                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
+                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
+
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
+                gigList.appendChild(gigDiv);
+            }
+        });
+
+        if (facebookFormat) {
+            gigList.innerHTML += `<br><br>`;
+        }
+    }
+}
+
+function filterGigs() {
+    const filterValue = document.getElementById('filter').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('filter_value', filterValue);
+    window.location.search = urlParams.toString();
+}
