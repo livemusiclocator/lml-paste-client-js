@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         updateVisibleDates();
-        formatForFacebook();
+        document.getElementById('facebook-container').style.display = 'none';
     }
 
     function updateVisibleDates() {
@@ -160,6 +160,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
             }
         });
+
+        document.getElementById('facebook-container').style.display = 'block';
     };
 
     function boldText(text) {

@@ -56,14 +56,26 @@ fieldset {
     text-decoration: underline;
 }
 
-#filter, #format-facebook-btn {
+#filter {
     display: block;
-    margin: 10px auto;
+    margin: 10px 0;
+    max-width: 200px; /* Add a max-width to prevent it from expanding */
+}
+
+#format-facebook-btn {
+    display: block;
+    margin: 10px 0;
 }
 
 #results-container {
     display: flex;
     flex-wrap: wrap;
+}
+
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 #gig-list {
@@ -74,4 +86,5 @@ fieldset {
     flex: 1;
     margin-left: 20px;
     align-self: flex-start;
+    display: none;
 }
