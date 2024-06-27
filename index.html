@@ -36,19 +36,27 @@
         <button type="submit">Search</button>
     </form>
     
-    <div id="results-container" style="display: none;">
-        <div class="control-panel">
-            <select id="filter" onchange="filterGigs()">
-                <option value="All">All</option>
-            </select>
-        </div>
-        <h2 id="date-range"></h2>
-        <div id="gig-list"></div>
+    <div id="filters-container" style="display: none;">
+        <select id="filter-venue" onchange="filterGigs()">
+            <option value="All">All Venues</option>
+        </select>
+        <select id="filter-postcode" onchange="filterGigs()">
+            <option value="All">All Postcodes</option>
+        </select>
+        <select id="filter-genre" onchange="filterGigs()">
+            <option value="All">All Genres</option>
+        </select>
     </div>
-    
-    <div id="facebook-container" style="display: none;">
-        <h3>Facebook Formatted Text</h3>
-        <textarea id="facebook-text" rows="10" cols="50"></textarea>
+
+    <div id="results-container" style="display: none;">
+        <h2 id="date-range"></h2>
+        <div class="results-content">
+            <div id="gig-list"></div>
+            <div id="facebook-container" style="display: none;">
+                <h3>Facebook Formatted Text</h3>
+                <textarea id="facebook-text" rows="10" cols="50"></textarea>
+            </div>
+        </div>
     </div>
 
     <footer>

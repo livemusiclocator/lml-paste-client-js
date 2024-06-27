@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(url);
             const gigs = await response.json();
 
-            // Get postcodes and venues present in the results
+            // Get postcodes, venues, and genres present in the results
             const postcodes = {};
             const venues = new Set();
+            const genres = new Set();
             gigs.forEach(gig => {
                 const venue = gig.venue || {};
                 const venueAddress = venue.address || '';
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
                 }
                 venues.add(venue.name || 'Unknown Venue');
+                gig.genre_tags.forEach(genre => genres.add(genre));
             });
 
             // Load suburb names from local file
@@ -36,17 +38,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Update the filter dropdown
-            const filter = document.getElementById('filter');
-            filter.innerHTML = '<option value="All">All</option>';
-            Object.keys(postcodes).forEach(postcode => {
-                filter.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
-            });
+            // Update the filter dropdowns
+            const filterVenue = document.getElementById('filter-venue');
+            filterVenue.innerHTML = '<option value="All">All Venues</option>';
             venues.forEach(venue => {
-                filter.innerHTML += `<option value="${venue}">${venue}</option>`;
+                filterVenue.innerHTML += `<option value="${venue}">${venue}</option>`;
             });
 
-            // Display the results container
+            const filterPostcode = document.getElementById('filter-postcode');
+            filterPostcode.innerHTML = '<option value="All">All Postcodes</option>';
+            Object.keys(postcodes).forEach(postcode => {
+                filterPostcode.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
+            });
+
+            const filterGenre = document.getElementById('filter-genre');
+            filterGenre.innerHTML = '<option value="All">All Genres</option>';
+            genres.forEach(genre => {
+                filterGenre.innerHTML += `<option value="${genre}">${genre}</option>`;
+            });
+
+            // Display the filters container and results container
+            document.getElementById('filters-container').style.display = 'flex';
             document.getElementById('results-container').style.display = 'flex';
             document.getElementById('facebook-container').style.display = 'flex';
             document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
@@ -59,11 +71,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.filterGigs = function () {
-        const filterValue = document.getElementById('filter').value;
+        const filterVenueValue = document.getElementById('filter-venue').value;
+        const filterPostcodeValue = document.getElementById('filter-postcode').value;
+        const filterGenreValue = document.getElementById('filter-genre').value;
         const gigs = document.querySelectorAll('.gig');
 
         gigs.forEach(gig => {
-            if (filterValue === 'All' || gig.dataset.postcode === filterValue || gig.dataset.venue === filterValue) {
+            const venueMatch = filterVenueValue === 'All' || gig.dataset.venue === filterVenueValue;
+            const postcodeMatch = filterPostcodeValue === 'All' || gig.dataset.postcode === filterPostcodeValue;
+            const genreMatch = filterGenreValue === 'All' || gig.dataset.genres.includes(filterGenreValue);
+
+            if (venueMatch && postcodeMatch && genreMatch) {
                 gig.style.display = 'block';
             } else {
                 gig.style.display = 'none';
@@ -100,8 +118,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const gigDiv = document.createElement('div');
                 gigDiv.className = 'gig';
                 gigDiv.dataset.date = date;
-                gigDiv.dataset.postcode = gig.venue.address.split(' ').pop();
+                gigDiv.dataset.postcode = gig.venue.postcode;
                 gigDiv.dataset.venue = gig.venue.name;
+                gigDiv.dataset.genres = gig.genre_tags.join(',');
 
                 const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
                 const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
