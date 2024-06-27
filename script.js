@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    
     function boldText(text) {
         const boldMap = {
             'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟',
