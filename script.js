@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Display the results container
             document.getElementById('results-container').style.display = 'flex';
+            document.getElementById('facebook-container').style.display = 'flex';
             document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
 
             // Display gigs
@@ -113,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         updateVisibleDates();
-        document.getElementById('facebook-container').style.display = 'none';
+        formatForFacebook();
     }
 
     function updateVisibleDates() {
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    window.formatForFacebook = function () {
+    function formatForFacebook() {
         const gigs = document.querySelectorAll('.gig');
         const facebookText = document.getElementById('facebook-text');
         facebookText.value = '';
@@ -160,9 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
             }
         });
-
-        document.getElementById('facebook-container').style.display = 'block';
-    };
+    }
 
     function boldText(text) {
         const boldMap = {

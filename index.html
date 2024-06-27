@@ -37,17 +37,16 @@
     </form>
     
     <div id="results-container" style="display: none;">
-        <h2 id="date-range"></h2>
         <div class="control-panel">
             <select id="filter" onchange="filterGigs()">
                 <option value="All">All</option>
             </select>
-            <button id="format-facebook-btn" onclick="formatForFacebook()">Format for Facebook</button>
         </div>
+        <h2 id="date-range"></h2>
         <div id="gig-list"></div>
     </div>
     
-    <div id="facebook-container">
+    <div id="facebook-container" style="display: none;">
         <h3>Facebook Formatted Text</h3>
         <textarea id="facebook-text" rows="10" cols="50"></textarea>
     </div>
