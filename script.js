@@ -13,42 +13,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(url);
             const gigs = await response.json();
 
-            // Get postcodes, venues, and genres present in the results
-            const postcodes = {};
-            const venues = new Set();
+            // Get locations (venues and postcodes) and genres present in the results
+            const locations = new Set();
             const genres = new Set();
             gigs.forEach(gig => {
                 const venue = gig.venue || {};
-                const venueAddress = venue.address || '';
-                const venuePostcode = venueAddress.split(' ').pop();
-                if (!isNaN(venuePostcode)) {
-                    postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
-                }
-                venues.add(venue.name || 'Unknown Venue');
+                const location = `${venue.name} (${venue.postcode})`;
+                locations.add(location);
                 gig.genre_tags.forEach(genre => genres.add(genre));
             });
 
-            // Load suburb names from local file
-            const postcodesCsv = await fetch('vic_postcodes.csv').then(response => response.text());
-            const lines = postcodesCsv.split('\n');
-            lines.forEach(line => {
-                const [postcode, suburb] = line.split(',');
-                if (postcodes[postcode]) {
-                    postcodes[postcode] = suburb;
-                }
-            });
-
             // Update the filter dropdowns
-            const filterVenue = document.getElementById('filter-venue');
-            filterVenue.innerHTML = '<option value="All">All Venues</option>';
-            venues.forEach(venue => {
-                filterVenue.innerHTML += `<option value="${venue}">${venue}</option>`;
-            });
-
-            const filterPostcode = document.getElementById('filter-postcode');
-            filterPostcode.innerHTML = '<option value="All">All Postcodes</option>';
-            Object.keys(postcodes).forEach(postcode => {
-                filterPostcode.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
+            const filterLocation = document.getElementById('filter-location');
+            filterLocation.innerHTML = '<option value="All">All Locations</option>';
+            locations.forEach(location => {
+                filterLocation.innerHTML += `<option value="${location}">${location}</option>`;
             });
 
             const filterGenre = document.getElementById('filter-genre');
@@ -71,17 +50,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.filterGigs = function () {
-        const filterVenueValue = document.getElementById('filter-venue').value;
-        const filterPostcodeValue = document.getElementById('filter-postcode').value;
+        const filterLocationValue = document.getElementById('filter-location').value;
         const filterGenreValue = document.getElementById('filter-genre').value;
         const gigs = document.querySelectorAll('.gig');
 
         gigs.forEach(gig => {
-            const venueMatch = filterVenueValue === 'All' || gig.dataset.venue === filterVenueValue;
-            const postcodeMatch = filterPostcodeValue === 'All' || gig.dataset.postcode === filterPostcodeValue;
+            const locationMatch = filterLocationValue === 'All' || gig.dataset.location === filterLocationValue;
             const genreMatch = filterGenreValue === 'All' || gig.dataset.genres.includes(filterGenreValue);
 
-            if (venueMatch && postcodeMatch && genreMatch) {
+            if (locationMatch && genreMatch) {
                 gig.style.display = 'block';
             } else {
                 gig.style.display = 'none';
@@ -118,8 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const gigDiv = document.createElement('div');
                 gigDiv.className = 'gig';
                 gigDiv.dataset.date = date;
-                gigDiv.dataset.postcode = gig.venue.postcode;
-                gigDiv.dataset.venue = gig.venue.name;
+                gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
 
                 const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';

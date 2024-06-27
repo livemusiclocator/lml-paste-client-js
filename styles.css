@@ -68,6 +68,7 @@ fieldset {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .results-content {
@@ -83,4 +84,19 @@ fieldset {
     flex: 1;
     margin-left: 20px;
     align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#facebook-text {
+    flex: 1;
+    width: 100%;
+    resize: none;
+}
+
+.divider {
+    width: 100%;
+    border: 0.5px solid #ccc;
+    margin: 20px 0;
 }

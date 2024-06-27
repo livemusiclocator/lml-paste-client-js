@@ -37,27 +37,28 @@
     </form>
     
     <div id="filters-container" style="display: none;">
-        <select id="filter-venue" onchange="filterGigs()">
-            <option value="All">All Venues</option>
-        </select>
-        <select id="filter-postcode" onchange="filterGigs()">
-            <option value="All">All Postcodes</option>
+        <select id="filter-location" onchange="filterGigs()">
+            <option value="All">All Locations</option>
         </select>
         <select id="filter-genre" onchange="filterGigs()">
             <option value="All">All Genres</option>
         </select>
     </div>
 
+    <hr class="divider">
+
     <div id="results-container" style="display: none;">
         <h2 id="date-range"></h2>
         <div class="results-content">
             <div id="gig-list"></div>
-            <div id="facebook-container" style="display: none;">
+            <div id="facebook-container" style="display: flex;">
                 <h3>Facebook Formatted Text</h3>
                 <textarea id="facebook-text" rows="10" cols="50"></textarea>
             </div>
         </div>
     </div>
+
+    <hr class="divider">
 
     <footer>
         <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
