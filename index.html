@@ -19,9 +19,6 @@
         <label for="date_to">Date To:</label>
         <input type="date" id="date_to" name="date_to">
         
-        <label for="facebook_format">Format for Facebook:</label>
-        <input type="checkbox" id="facebook_format" name="facebook_format">
-        
         <label for="timezone">Select Timezone:</label>
         <select id="timezone" name="timezone">
             <option value="AEST">AEST</option>
@@ -44,8 +41,8 @@
         <select id="filter" onchange="filterGigs()">
             <option value="All">All</option>
         </select>
-        <div id="gig-list"></div>
         <button id="format-facebook-btn" onclick="formatForFacebook()">Format for Facebook</button>
+        <div id="gig-list"></div>
     </div>
     
     <div id="facebook-container">

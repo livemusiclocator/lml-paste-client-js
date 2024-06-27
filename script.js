@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;
-        const facebookFormat = document.getElementById('facebook_format').checked;
         const timezone = document.getElementById('timezone').value;
         const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
@@ -48,11 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Display the results container
-            document.getElementById('results-container').style.display = 'block';
+            document.getElementById('results-container').style.display = 'flex';
             document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
 
             // Display gigs
-            displayGigs(gigs, elements, facebookFormat, timezone);
+            displayGigs(gigs, elements, timezone);
         } catch (error) {
             console.error('Failed to load gigs:', error);
         }
@@ -71,9 +70,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         updateVisibleDates();
+        formatForFacebook();
     };
 
-    function displayGigs(gigs, elements, facebookFormat, timezone) {
+    function displayGigs(gigs, elements, timezone) {
         const gigList = document.getElementById('gig-list');
         const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
@@ -113,13 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         updateVisibleDates();
-
-        if (facebookFormat) {
-            formatForFacebook();
-            document.getElementById('facebook-container').style.display = 'block';
-        } else {
-            document.getElementById('facebook-container').style.display = 'none';
-        }
+        formatForFacebook();
     }
 
     function updateVisibleDates() {
