@@ -13,21 +13,39 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(url);
             const gigs = await response.json();
 
-            // Get locations (venues and postcodes) and genres present in the results
-            const locations = new Set();
+            // Get postcodes, venues, and genres present in the results
+            const postcodes = {};
+            const venues = new Set();
             const genres = new Set();
             gigs.forEach(gig => {
                 const venue = gig.venue || {};
-                const location = `${venue.name} (${venue.postcode})`;
-                locations.add(location);
+                const venueAddress = venue.address || '';
+                const venuePostcode = venue.postcode || venueAddress.split(' ').pop();
+                if (!isNaN(venuePostcode)) {
+                    postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
+                }
+                venues.add(venue.name || 'Unknown Venue');
                 gig.genre_tags.forEach(genre => genres.add(genre));
             });
 
-            // Update the filter dropdowns
+            // Load suburb names from local file
+            const postcodesCsv = await fetch('vic_postcodes.csv').then(response => response.text());
+            const lines = postcodesCsv.split('\n');
+            lines.forEach(line => {
+                const [postcode, suburb] = line.split(',');
+                if (postcodes[postcode]) {
+                    postcodes[postcode] = suburb;
+                }
+            });
+
+            // Update the filter dropdown
             const filterLocation = document.getElementById('filter-location');
             filterLocation.innerHTML = '<option value="All">All Locations</option>';
-            locations.forEach(location => {
-                filterLocation.innerHTML += `<option value="${location}">${location}</option>`;
+            Object.keys(postcodes).forEach(postcode => {
+                filterLocation.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
+            });
+            venues.forEach(venue => {
+                filterLocation.innerHTML += `<option value="${venue}">${venue}</option>`;
             });
 
             const filterGenre = document.getElementById('filter-genre');
@@ -55,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const gigs = document.querySelectorAll('.gig');
 
         gigs.forEach(gig => {
-            const locationMatch = filterLocationValue === 'All' || gig.dataset.location === filterLocationValue;
+            const locationMatch = filterLocationValue === 'All' || gig.dataset.location.includes(filterLocationValue);
             const genreMatch = filterGenreValue === 'All' || gig.dataset.genres.includes(filterGenreValue);
 
             if (locationMatch && genreMatch) {
