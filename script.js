@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
         facebookText.value = '';
-
+    
         const groupedGigs = gigs.reduce((acc, gig) => {
             const date = gig.date;
             if (!acc[date]) {
@@ -101,34 +101,35 @@ document.addEventListener('DOMContentLoaded', function () {
             acc[date].push(gig);
             return acc;
         }, {});
-
+    
         for (const [date, gigs] of Object.entries(groupedGigs)) {
             const dateHeader = document.createElement('h2');
             dateHeader.className = 'date-header';
             dateHeader.dataset.date = date;
             dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
             gigList.appendChild(dateHeader);
-
+    
             gigs.forEach(gig => {
                 const gigDiv = document.createElement('div');
                 gigDiv.className = 'gig';
                 gigDiv.dataset.date = date;
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
-
+    
                 const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
                 const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
                 const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
-                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>` : '';
-
+                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${new Date(gig.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</div>` : '';
+    
                 gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
             });
         }
-
+    
         updateVisibleDates();
         formatForFacebook();
     }
+    
 
     function updateVisibleDates() {
         const gigList = document.getElementById('gig-list');
