@@ -34,7 +34,7 @@ form input, form select, form fieldset {
 fieldset {
     border: 1px solid #ccc;
     padding: 10px;
-    width: 300px;
+    width: 300px; /* You may adjust as per design requirement */
 }
 
 .gig {
@@ -64,11 +64,13 @@ fieldset {
     margin-bottom: 20px;
 }
 
-#results-container {
+#results-container, #facebook-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 48%; /* Adjusted to fit side by side */
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .results-content {
@@ -76,26 +78,17 @@ fieldset {
     width: 100%;
 }
 
-#gig-list {
+#gig-list, #facebook-text {
     flex: 1;
-}
-
-#facebook-container {
-    flex: 1;
-    margin-left: 20px;
-    align-self: flex-start;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     width: 100%;
+    height: 300px; /* Adjust height as needed */
+    border: 1px solid #ccc;
+    padding: 8px;
+    box-sizing: border-box;
 }
-
 
 #facebook-text {
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    resize: none;
+    resize: none; /* Ensures the text area does not get resized */
 }
 
 .divider {
@@ -103,3 +96,39 @@ fieldset {
     border: 0.5px solid #ccc;
     margin: 20px 0;
 }
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.halfscreen {
+    width: 48%; /* Adjust width to get the desired layout */
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#facebook-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+#facebook-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 330px; /* Adjust based on the width of the facebook-container */
+    padding: 10px 20px;
+    z-index: 1000;
+}
+
+/* Existing CSS for other elements */
