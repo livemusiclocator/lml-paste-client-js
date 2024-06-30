@@ -13,57 +13,32 @@
 
     <h1>Live Music Locator</h1>
     <form id="search-form">
-        <label for="date_from">Date From:</label>
-        <input type="date" id="date_from" name="date_from">
-        
-        <label for="date_to">Date To:</label>
-        <input type="date" id="date_to" name="date_to">
-        
-        <label for="timezone">Select Timezone:</label>
-        <select id="timezone" name="timezone">
-            <option value="AEST">AEST</option>
-            <!-- Add other timezones as necessary -->
-        </select>
-        
-        <fieldset>
-            <legend>Select Data Elements:</legend>
-            <label><input type="checkbox" name="elements" value="name" checked>Name</label>
-            <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
-            <label><input type="checkbox" name="elements" value="address" checked>Address</label>
-            <label><input type="checkbox" name="elements" value="time" checked>Time</label>
-        </fieldset>
-        
-        <button type="submit">Search</button>
+        <!-- form elements -->
     </form>
     
-    <div id="filters-container" style="display: none;">
-        <select id="filter-location" onchange="filterGigs()">
-            <option value="All">All Locations</option>
-        </select>
-        <select id="filter-genre" onchange="filterGigs()">
-            <option value="All">All Genres</option>
-        </select>
-    </div>
-
     <hr class="divider">
-
-    <div id="results-container" style="display: none;">
-        <h2 id="date-range"></h2>
-        <div class="results-content">
+    
+    <div class="container">
+        <div class="halfscreen" id="results-container">
+            <h2>Your Gig Guide</h2>
             <div id="gig-list"></div>
-            <div id="facebook-container" style="display: flex;">
-                <h3>Facebook Formatted Text</h3>
-                <textarea id="facebook-text" rows="10" cols="50"></textarea>
-            </div>
         </div>
     </div>
-
     
     <hr class="divider">
 
     <footer>
         <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
     </footer>
+
+    <!-- Floating button -->
+    <button id="toggle-fb-text" class="floating-button">Formatted for Facebook</button>
+
+    <!-- Floating container -->
+    <div id="floating-container" class="floating-container">
+        <h3>Formatted for Facebook</h3>
+        <textarea id="facebook-text" rows="10" cols="50"></textarea>
+    </div>
     
     <script src="script.js?v=1.0"></script>
 </body>

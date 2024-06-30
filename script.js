@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Existing code...
+
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
 
@@ -188,4 +190,10 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         return text.split('').map(char => boldMap[char] || char).join('');
     }
+
+    // Toggle floating container visibility
+    document.getElementById('toggle-fb-text').addEventListener('click', function () {
+        const container = document.getElementById('floating-container');
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    });
 });
