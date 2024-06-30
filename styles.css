@@ -87,6 +87,7 @@ fieldset {
     box-sizing: border-box;
 }
 
+
 #facebook-text {
     resize: none; /* Ensures the text area does not get resized */
 }

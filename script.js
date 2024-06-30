@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     
+        
         updateVisibleDates();
         formatForFacebook();
     }
