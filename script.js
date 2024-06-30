@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Existing code...
+
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
 
@@ -13,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(url);
             const gigs = await response.json();
 
+            // Get postcodes, venues, and genres present in the results
             const postcodes = {};
             const venues = new Set();
             const genres = new Set();
@@ -21,12 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueAddress = venue.address || '';
                 const venuePostcode = venue.postcode || venueAddress.split(' ').pop();
                 if (!isNaN(venuePostcode)) {
-                    postcodes[venuePostcode] = 'Unknown Suburb';
+                    postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
                 }
                 venues.add(venue.name || 'Unknown Venue');
                 gig.genre_tags.forEach(genre => genres.add(genre));
             });
 
+            // Load suburb names from local file
             const postcodesCsv = await fetch('vic_postcodes.csv').then(response => response.text());
             const lines = postcodesCsv.split('\n');
             lines.forEach(line => {
@@ -36,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+            // Update the filter dropdown
             const filterLocation = document.getElementById('filter-location');
             filterLocation.innerHTML = '<option value="All">All Locations</option>';
             Object.keys(postcodes).forEach(postcode => {
@@ -51,11 +56,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 filterGenre.innerHTML += `<option value="${genre}">${genre}</option>`;
             });
 
+            // Display the filters container and results container
             document.getElementById('filters-container').style.display = 'flex';
             document.getElementById('results-container').style.display = 'flex';
             document.getElementById('facebook-container').style.display = 'flex';
             document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
 
+            // Display gigs
             displayGigs(gigs, elements, timezone);
         } catch (error) {
             console.error('Failed to load gigs:', error);
@@ -184,15 +191,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return text.split('').map(char => boldMap[char] || char).join('');
     }
 
-    function toggleFacebook() {
-        var container = document.getElementById('facebook-container');
-        container.style.display = container.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function copyText() {
-        var textArea = document.getElementById('facebook-text');
-        textArea.select();
-        document.execCommand('copy');
-        alert('Text copied to clipboard!');
-    }
+    // Toggle floating container visibility
+    document.getElementById('toggle-fb-text').addEventListener('click', function () {
+        const container = document.getElementById('floating-container');
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    });
 });
