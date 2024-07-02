@@ -169,4 +169,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     currentHeader = dateHeader.textContent;
                     facebookText.value += `\n${currentHeader}\n`;
                 }
-                facebookText.value += `${gig.querySelector('.gig-name').textContent} at ${gig.querySelector('.gig-venue a').textContent}\n
+                facebookText.value += `${gig.querySelector('.gig-name').textContent} at ${gig.querySelector('.gig-venue a').textContent}\n`;
+            }
+        });
+    }
+});
