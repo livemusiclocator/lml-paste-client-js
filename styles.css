@@ -37,11 +37,29 @@ fieldset {
     width: 300px; 
 }
 
+/* .gig {
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0;
+    padding: 10px 0;
+} */
+
+.date-header {
+    text-align: center; /* Center-aligns the date headers */
+}
+
+#gig-list h2 {
+    text-align: center; /* Center-aligns <h2> elements within the gig list */
+}
+
+
+
 .gig {
     border-bottom: 1px solid #ccc;
     margin: 10px 0;
     padding: 10px 0;
+    text-align: center; /* Add this line */
 }
+
 
 .gig-name {
     font-weight: bold;
@@ -64,11 +82,20 @@ fieldset {
     margin-bottom: 20px;
 }
 
-#facebook-container {
+/* #facebook-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%; 
+    padding: 0;  
+    box-sizing: border-box;
+} */
+
+#facebook-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns children to the start of the flex-direction */
+    width: 100%;
     padding: 0;  
     box-sizing: border-box;
 }
@@ -119,6 +146,12 @@ fieldset {
     margin-left: 2%; 
     margin-right: 2%; 
 }
+
+/* Add this to your styles.css */
+#toggle-fb-text, #results-container, #filters-container {
+    display: none;
+}
+
 
 .halfscreen {
     width: 100%;
@@ -176,7 +209,7 @@ footer {
     cursor: pointer;
 }
 
-.copy-btn {
+/* .copy-btn {
     padding: 10px;
     margin-bottom: 5px;
     background-color: #4CAF50;
@@ -184,4 +217,16 @@ footer {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+} */
+
+.copy-btn {
+    padding: 10px;
+    margin-bottom: 5px;
+    margin-top: 10px; /* Added to give some space above the button */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end; /* Aligns the button to the right */
 }

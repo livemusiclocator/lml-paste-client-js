@@ -1,5 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
 console.log('DOM fully loaded and parsed'); // Debugging statement
+const searchButton = document.getElementById('search-form');
+const toggleFBTextButton = document.getElementById('toggle-fb-text');
+const floatingContainer = document.getElementById('floating-container');
+const filtersContainer = document.getElementById('filters-container');
+const resultsContainer = document.getElementById('results-container');
+const closeButton = document.getElementById('close-float');
+
     document.getElementById('toggle-fb-text').addEventListener('click', () => {
         console.log('Floating button clicked'); // Debugging statement
         const button = document.getElementById('toggle-fb-text');
@@ -43,7 +50,9 @@ console.log('DOM fully loaded and parsed'); // Debugging statement
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
         console.log('submit pressed'); // Debugging statement
-
+        toggleFBTextButton.style.display = 'block';
+        resultsContainer.style.display = 'flex';
+        filtersContainer.style.display = 'flex';
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;

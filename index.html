@@ -31,7 +31,7 @@
         <button type="submit">Search</button>
     </form>
     
-    <hr class="divider">
+    <hr class="divider" class="divider initially-hidden">
     
     <div id="filters-container" style="display: none;">
         <select id="filter-location" onchange="filterGigs()">
@@ -42,7 +42,7 @@
         </select>
     </div>
     
-    <hr class="divider">
+    <hr class="divider" class="divider initially-hidden">
     
     <div class="container">
         <div class="halfscreen" id="results-container">
@@ -65,12 +65,10 @@
     <button id="close-float" class="close-btn">X</button>
     <div class="halfscreen" id="facebook-container">
         <h3>Formatted for Facebook</h3>
-        <button id="copy-text" class="copy-btn">Copy Text</button>
         <textarea id="facebook-text" rows="30" cols="100"></textarea>
-    </div>
+        <button id="copy-text" class="copy-btn">Copy Text</button>
+    </div>    
 </div>
-
-    
     <script src="script.js?v=1.0"></script>
 </body>
 </html>
