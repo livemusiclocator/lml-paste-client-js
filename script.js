@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
             displayGigs(gigs, elements, timezone);
         } catch (error) {
             console.error('Failed to load gigs:', error);
+            alert('Failed to load gigs. Please try again later.');
         }
     });
 
@@ -168,8 +169,4 @@ document.addEventListener('DOMContentLoaded', function () {
                     currentHeader = dateHeader.textContent;
                     facebookText.value += `\n${currentHeader}\n`;
                 }
-                facebookText.value += `${gig.querySelector('.gig-name').textContent} at ${gig.querySelector('.gig-venue a').textContent}\n`;
-            }
-        });
-    }
-});
+                facebookText.value += `${gig.querySelector('.gig-name').textContent} at ${gig.querySelector('.gig-venue a').textContent}\n
