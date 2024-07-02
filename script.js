@@ -15,6 +15,13 @@ console.log('DOM fully loaded and parsed'); // Debugging statement
         console.log('Container after show:', container); // Debugging statement
     });
 
+    document.getElementById('copy-text').addEventListener('click', function () {
+        const textArea = document.getElementById('facebook-text');
+        textArea.select();
+        document.execCommand('copy');
+    });
+    
+
     document.getElementById('close-float').addEventListener('click', () => {
 
         // Existing debugging statement
