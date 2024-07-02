@@ -1,6 +1,42 @@
 document.addEventListener('DOMContentLoaded', function () {
+console.log('DOM fully loaded and parsed'); // Debugging statement
+    document.getElementById('toggle-fb-text').addEventListener('click', () => {
+        console.log('Floating button clicked'); // Debugging statement
+        const button = document.getElementById('toggle-fb-text');
+        const container = document.getElementById('floating-container');
+
+        console.log('Button before hide:', button); // Debugging statement
+        console.log('Container before show:', container); // Debugging statement
+
+        button.style.display = 'none';
+        container.style.display = 'block';
+
+        console.log('Button after hide:', button); // Debugging statement
+        console.log('Container after show:', container); // Debugging statement
+    });
+
+    document.getElementById('close-float').addEventListener('click', () => {
+
+        // Existing debugging statement
+        console.log('Close button clicked'); 
+
+        const button = document.getElementById('toggle-fb-text');
+        const container = document.getElementById('floating-container');
+
+        console.log('Container before hide:', container); // Debugging statement
+        console.log('Button before show:', button); // Debugging statement
+
+        container.style.display = 'none';
+        button.style.display = 'block';
+
+        console.log('Container after hide:', container); // Debugging statement
+        console.log('Button after show:', button); // Debugging statement
+    });
+
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
+        console.log('submit pressed'); // Debugging statement
+
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;
@@ -14,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const gigs = await response.json();
-
             console.log('API Response:', gigs);
 
             // Get postcodes, venues, and genres present in the results
