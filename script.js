@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const gigs = await response.json();
 
             console.log('API Response:', gigs);
@@ -161,4 +164,12 @@ document.addEventListener('DOMContentLoaded', function () {
         gigs.forEach(gig => {
             if (gig.style.display !== 'none') {
                 const dateHeader = gig.previousElementSibling;
-                if (dateHeader && dateHead
+                if (dateHeader && dateHeader.classList.contains('date-header')) {
+                    currentHeader = dateHeader.textContent;
+                    facebookText.value += `\n${currentHeader}\n`;
+                }
+                facebookText.value += `${gig.querySelector('.gig-name').textContent} at ${gig.querySelector('.gig-venue a').textContent}\n`;
+            }
+        });
+    }
+});
