@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
-console.log('DOM fully loaded and parsed'); // Debugging statement
-const searchButton = document.getElementById('search-form');
-const toggleFBTextButton = document.getElementById('toggle-fb-text');
-const floatingContainer = document.getElementById('floating-container');
-const filtersContainer = document.getElementById('filters-container');
-const resultsContainer = document.getElementById('results-container');
-const closeButton = document.getElementById('close-float');
+    console.log('DOM fully loaded and parsed'); // Debugging statement
+    const searchButton = document.getElementById('search-form');
+    const toggleFBTextButton = document.getElementById('toggle-fb-text');
+    const floatingContainer = document.getElementById('floating-container');
+    const filtersContainer = document.getElementById('filters-container');
+    const resultsContainer = document.getElementById('results-container');
+    const closeButton = document.getElementById('close-float');
 
     document.getElementById('toggle-fb-text').addEventListener('click', () => {
         console.log('Floating button clicked'); // Debugging statement
@@ -27,13 +27,9 @@ const closeButton = document.getElementById('close-float');
         textArea.select();
         document.execCommand('copy');
     });
-    
 
     document.getElementById('close-float').addEventListener('click', () => {
-
-        // Existing debugging statement
-        console.log('Close button clicked'); 
-
+        console.log('Close button clicked'); // Debugging statement
         const button = document.getElementById('toggle-fb-text');
         const container = document.getElementById('floating-container');
 
@@ -219,11 +215,30 @@ const closeButton = document.getElementById('close-float');
             if (gig.style.display !== 'none') {
                 const dateHeader = gig.previousElementSibling;
                 if (dateHeader && dateHeader.classList.contains('date-header')) {
-                    currentHeader = dateHeader.textContent;
-                    facebookText.value += `\n${currentHeader}\n`;
+                    if (currentHeader !== dateHeader.textContent) {
+                        currentHeader = dateHeader.textContent;
+                        facebookText.value += `${boldText(currentHeader)}\n\n`;
+                    }
                 }
-                facebookText.value += `${gig.querySelector('.gig-name').textContent} at ${gig.querySelector('.gig-venue a').textContent}\n`;
+
+                const name = gig.querySelector('.gig-name') ? gig.querySelector('.gig-name').textContent : '';
+                const venueName = gig.querySelector('.gig-venue') ? gig.querySelector('.gig-venue').textContent : '';
+                const address = gig.querySelector('.gig-address') ? gig.querySelector('.gig-address').textContent : '';
+                const time = gig.querySelector('.gig-time') ? gig.querySelector('.gig-time').textContent : '';
+
+                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
             }
         });
+    }
+
+    function boldText(text) {
+        const boldMap = {
+            'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟',
+            'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥', 'S': '𝗦', 'T': '𝗧', 'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫',
+            'Y': '𝗬', 'Z': '𝗭', 'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷',
+            'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽', 'q': '𝗾', 'r': '𝗿', 's': '𝘀', 't': '𝘁', 'u': '𝘂', 'v': '𝘃',
+            'w': '𝘄', 'x': '𝘅', 'y': '𝘆', 'z': '𝘇'
+        };
+        return text.split('').map(char => boldMap[char] || char).join('');
     }
 });
