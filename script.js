@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;
-        const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
         const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${dateFrom}&date_to=${dateTo}`;
 
@@ -111,11 +110,9 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('filters-container').style.display = 'flex';
             document.getElementById('results-container').style.display = 'flex';
             document.getElementById('facebook-container').style.display = 'flex';
-            // Comment out or remove this line if not needed
-            // document.getElementById('date-range').innerText = `Gigs for ${dateFrom} to ${dateTo}`;
 
             // Display gigs
-            displayGigs(gigs, elements);
+            displayGigs(gigs);
         } catch (error) {
             console.error('Failed to load gigs:', error);
             alert('Failed to load gigs. Please try again later.');
@@ -125,6 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
     window.filterGigs = function () {
         const filterLocationValue = document.getElementById('filter-location').value;
         const filterGenreValue = document.getElementById('filter-genre').value;
+        const filterAddress = document.getElementById('filter-address').checked;
+        const filterTime = document.getElementById('filter-time').checked;
         const gigs = document.querySelectorAll('.gig');
 
         gigs.forEach(gig => {
@@ -133,6 +132,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (locationMatch && genreMatch) {
                 gig.style.display = 'block';
+
+                const addressElement = gig.querySelector('.gig-address');
+                const timeElement = gig.querySelector('.gig-time');
+
+                if (addressElement) {
+                    addressElement.style.display = filterAddress ? 'block' : 'none';
+                }
+
+                if (timeElement) {
+                    timeElement.style.display = filterTime ? 'block' : 'none';
+                }
             } else {
                 gig.style.display = 'none';
             }
@@ -142,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formatForFacebook();
     };
 
-    function displayGigs(gigs, elements) {
+    function displayGigs(gigs) {
         const gigList = document.getElementById('gig-list');
         const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
@@ -171,18 +181,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
 
-                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
-                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
-                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
-                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${gig.start_time}</div>` : '';
+                const name = `<div class="gig-name">${gig.name}</div>`;
+                const venueName = `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>`;
+                const address = `<div class="gig-address">${gig.venue.address}</div>`;
+                const time = gig.start_time ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
 
                 gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
             });
         }
 
+        // Add footer
+        const footer = document.createElement('div');
+        footer.className = 'gig-footer';
+        footer.textContent = 'Data courtesy of Live Music Locator';
+        gigList.appendChild(footer);
+
         updateVisibleDates();
         formatForFacebook();
+    }
+
+    function formatTime(timeString) {
+        const [hour, minute] = timeString.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hour));
+        date.setMinutes(parseInt(minute));
+        const options = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Australia/Sydney' };
+        return date.toLocaleTimeString('en-AU', options);
     }
 
     function updateVisibleDates() {
@@ -225,8 +250,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueName = gig.querySelector('.gig-venue') ? gig.querySelector('.gig-venue').textContent : '';
                 const address = gig.querySelector('.gig-address') ? gig.querySelector('.gig-address').textContent : '';
                 const time = gig.querySelector('.gig-time') ? gig.querySelector('.gig-time').textContent : '';
+                const footer = 'Data courtesy of Live Music Locator';
 
-                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
+                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n${footer}\n\n`;
             }
         });
     }
