@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Add footer
+        // Add footer once
         const footer = document.createElement('div');
         footer.className = 'gig-footer';
         footer.textContent = 'Data courtesy of Live Music Locator';
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (dateHeader && dateHeader.classList.contains('date-header')) {
                     if (currentHeader !== dateHeader.textContent) {
                         currentHeader = dateHeader.textContent;
-                        facebookText.value += `${boldText(currentHeader)}\n\n`;
+                        facebookText.value += `\n${boldText(currentHeader)}\n\n`;
                     }
                 }
 
@@ -250,11 +250,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueName = gig.querySelector('.gig-venue') ? gig.querySelector('.gig-venue').textContent : '';
                 const address = gig.querySelector('.gig-address') ? gig.querySelector('.gig-address').textContent : '';
                 const time = gig.querySelector('.gig-time') ? gig.querySelector('.gig-time').textContent : '';
-                const footer = 'Data courtesy of Live Music Locator';
 
-                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n${footer}\n\n`;
+                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
             }
         });
+
+        // Add footer once
+        facebookText.value += `Data courtesy of Live Music Locator`;
     }
 
     function boldText(text) {
