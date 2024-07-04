@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Get postcodes, venues, and genres present in the results
             const postcodes = {};
             const venues = new Set();
-            const genres = new Set();
+            const genres = {};
             gigs.forEach(gig => {
                 const venue = gig.venue || {};
                 const venueAddress = venue.address || '';
@@ -76,7 +76,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 venues.add(venue.name || 'Unknown Venue');
                 if (gig.genre_tags) {
-                    gig.genre_tags.forEach(genre => genres.add(genre));
+                    gig.genre_tags.forEach(genre => {
+                        if (!genres[genre]) {
+                            genres[genre] = 0;
+                        }
+                        genres[genre]++;
+                    });
                 }
             });
 
@@ -102,8 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const filterGenre = document.getElementById('filter-genre');
             filterGenre.innerHTML = '<option value="All">All Genres</option>';
-            genres.forEach(genre => {
-                filterGenre.innerHTML += `<option value="${genre}">${genre}</option>`;
+            Object.keys(genres).forEach(genre => {
+                filterGenre.innerHTML += `<option value="${genre}">${genre} (${genres[genre]})</option>`;
             });
 
             // Display the filters container and results container
