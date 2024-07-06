@@ -7,30 +7,33 @@
     <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 <body>
-    <header>
-        <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
-    </header>
-
-    <h1>Live Music Locator</h1>
-    <form id="search-form">
-        <!-- form elements -->
-        <label for="date_from">Date From:</label>
-        <input type="date" id="date_from" name="date_from">
-        
-        <label for="date_to">Date To:</label>
-        <input type="date" id="date_to" name="date_to">
-        
-        <fieldset>
-            <legend>Select Data Elements:</legend>
-            <label><input type="checkbox" name="elements" value="name" checked>Name</label>
-            <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
-            <label><input type="checkbox" name="elements" value="address" checked>Address</label>
-            <label><input type="checkbox" name="elements" value="time" checked>Time</label>
-        </fieldset>
-        
-        <button type="submit">Search</button>
-    </form>
+    <div class = "ts-dark-blue">
+        <header>
+            <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
+        </header>
     
+        <h1>Live Music Locator</h1>
+        <form id="search-form">
+            <!-- form elements -->
+            <label for="date_from">Date From:</label>
+            <input type="date" id="date_from" name="date_from">
+            
+            <label for="date_to">Date To:</label>
+            <input type="date" id="date_to" name="date_to">
+            
+            <fieldset>
+                <legend>Select Data Elements:</legend>
+                <label><input type="checkbox" name="elements" value="name" checked>Name</label>
+                <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
+                <label><input type="checkbox" name="elements" value="address" checked>Address</label>
+                <label><input type="checkbox" name="elements" value="time" checked>Time</label>
+            </fieldset>
+            
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class = "ms-yellow">        
     <hr class="divider" class="divider initially-hidden">
     
     <div id="filters-container" style="display: none;">
@@ -53,7 +56,8 @@
     
     <hr class="divider">
 
-    <footer>
+    </div>
+    <footer class = "ts-dark-blue">
         <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
     </footer>
 

@@ -1,9 +1,14 @@
+html{
+    background-color: #290539; /*swap color on live music locator website header here*/
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #ffffff; 
-    color: #000000; 
+    background-color: #290539; 
 }
+
+
 
 .logo {
     display: block;
@@ -37,18 +42,14 @@ fieldset {
     width: 300px; 
 }
 
-/* .gig {
-    border-bottom: 1px solid #ccc;
-    margin: 10px 0;
-    padding: 10px 0;
-} */
+
 
 .date-header {
-    text-align: center; /* Center-aligns the date headers */
+    text-align: center; 
 }
 
 #gig-list h2 {
-    text-align: center; /* Center-aligns <h2> elements within the gig list */
+    text-align: center; 
 }
 
 
@@ -57,7 +58,7 @@ fieldset {
     border-bottom: 1px solid #ccc;
     margin: 10px 0;
     padding: 10px 0;
-    text-align: center; /* Add this line */
+    text-align: center;
 }
 
 
@@ -82,24 +83,14 @@ fieldset {
     margin-bottom: 20px;
 }
 
-/* #facebook-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%; 
-    padding: 0;  
-    box-sizing: border-box;
-} */
-
 #facebook-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Aligns children to the start of the flex-direction */
+    align-items: flex-start; 
     width: 100%;
     padding: 0;  
     box-sizing: border-box;
 }
-
 
 #results-container {
     display: flex;
@@ -109,7 +100,6 @@ fieldset {
     padding: 10px;
     box-sizing: border-box;
 }
-
 
 .results-content {
     display: flex;
@@ -135,8 +125,10 @@ fieldset {
 
 .divider {
     width: 100%;
-    border: 0.5px solid #ccc;
+    border: 0.5px solid #290539;
     margin: 20px 0;
+    display: none; /* Hide the divider */
+
 }
 
 .container {
@@ -147,7 +139,6 @@ fieldset {
     margin-right: 2%; 
 }
 
-/* Add this to your styles.css */
 #toggle-fb-text, #results-container, #filters-container {
     display: none;
 }
@@ -181,14 +172,14 @@ footer {
     position: fixed;
     bottom: 80px;
     right: 20px;
-    width: 300px;  /* Or other specific size but ensure this matches the desired design */
+    width: 300px;  
     max-width: 90%;
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     display: none;
-    box-sizing: border-box; /* Makes sure padding does not add to the width */
+    box-sizing: border-box; 
 }
 
 
@@ -209,24 +200,24 @@ footer {
     cursor: pointer;
 }
 
-/* .copy-btn {
-    padding: 10px;
-    margin-bottom: 5px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-} */
-
 .copy-btn {
     padding: 10px;
     margin-bottom: 5px;
-    margin-top: 10px; /* Added to give some space above the button */
+    margin-top: 10px; 
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    align-self: flex-end; /* Aligns the button to the right */
+    align-self: flex-end; 
 }
+
+.ts-dark-blue, .divider{
+    background-color: #290539;
+    color: #ffffff;
+}
+
+.ms-yellow{
+    background-color: #f0e299;
+}
+
