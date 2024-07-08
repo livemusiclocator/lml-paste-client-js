@@ -5,70 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Music Locator</title>
     <link rel="stylesheet" href="styles.css?v=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Elite&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="ts-dark-blue">
         <header>
             <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
         </header>
-
+    
         <h1>Live Music Locator</h1>
         <form id="search-form">
-            <!-- form elements -->
             <label for="date_from">Date From:</label>
             <input type="date" id="date_from" name="date_from">
-
+            
             <label for="date_to">Date To:</label>
             <input type="date" id="date_to" name="date_to">
-
+            
             <button type="submit" class="search-button">Search</button>
         </form>
     </div>
 
-    <div class="ms-yellow">
-        <hr class="divider initially-hidden">
-
-        <div id="filters-container" style="display: none;" class="yellow-padding">
-            <fieldset>
-                <legend>Select Data Elements:</legend>
-                <label><input type="checkbox" name="elements" value="name" checked>Name</label>
-                <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
-                <label><input type="checkbox" name="elements" value="address" checked>Address</label>
-                <label><input type="checkbox" name="elements" value="time" checked>Time</label>
-            </fieldset>
-            <select id="filter-location" onchange="filterGigs()">
-                <option value="All">All Locations</option>
-            </select>
-            <select id="filter-genre" onchange="filterGigs()">
-                <option value="All">All Genres</option>
-            </select>
+    <div class="ms-yellow">        
+    <hr class="divider initially-hidden">
+    
+    <div id="filters-container" style="display: none;" class="yellow-padding">
+        <fieldset>
+            <legend>Select Data Elements:</legend>
+            <label><input type="checkbox" name="elements" value="name" checked>Name</label>
+            <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
+            <label><input type="checkbox" name="elements" value="address" checked>Address</label>
+            <label><input type="checkbox" name="elements" value="time" checked>Time</label>
+        </fieldset>
+        <select id="filter-location" onchange="filterGigs()">
+            <option value="All">All Locations</option>
+        </select>
+        <select id="filter-genre" onchange="filterGigs()">
+            <option value="All">All Genres</option>
+        </select>
+    </div>
+    
+    <hr class="divider initially-hidden">
+    
+    <div class="container">
+        <div class="halfscreen" id="results-container">
+            <h2>Your Gig Guide</h2>
+            <div id="gig-list"></div>
         </div>
+    </div>
+    
+    <hr class="divider">
 
-        <hr class="divider initially-hidden">
-
-        <div class="container">
-            <div class="halfscreen" id="results-container">
-                <h2>Your Gig Guide</h2>
-                <div id="gig-list"></div>
-            </div>
-        </div>
-
-        <hr class="divider">
     </div>
     <footer class="ts-dark-blue">
         <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
     </footer>
 
-    <!-- Excel handling script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-
-    <!-- Floating buttons container -->
-    <div id="floating-buttons-container" style="display: none;">
+    <!-- Floating buttons -->
+    <div id="floating-buttons-container" class="floating-buttons-container">
+        <button id="toggle-fb-text" class="floating-button">Formatted for Facebook</button>
         <button id="download-json" class="floating-button">Download as JSON</button>
         <button id="download-csv" class="floating-button">Download as CSV</button>
         <button id="download-excel" class="floating-button">Download as Excel</button>
-        <button id="toggle-fb-text" class="floating-button">Formatted for Facebook</button>
     </div>
 
     <!-- Floating container -->
@@ -78,9 +75,8 @@
             <h3>Formatted for Facebook</h3>
             <textarea id="facebook-text" rows="30" cols="100"></textarea>
             <button id="copy-text" class="copy-btn">Copy Text</button>
-        </div>
+        </div>    
     </div>
-
     <script src="script.js?v=1.0"></script>
 </body>
 </html>

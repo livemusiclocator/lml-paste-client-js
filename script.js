@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
             Address: gig.venue.address,
             Time: gig.start_time
         }));
-        const csv = csvData.map(row => Object.values(row).join(',')).join('\n');
+        const headers = ['Date', 'Name', 'Venue', 'Address', 'Time'];
+        const csv = [headers.join(','), ...csvData.map(row => Object.values(row).join(','))].join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             Address: gig.venue.address,
             Time: gig.start_time
         })));
+        XLSX.utils.sheet_add_aoa(ws, [['Date', 'Name', 'Venue', 'Address', 'Time']], { origin: 'A1' });
         XLSX.utils.book_append_sheet(wb, ws, 'Gigs');
         XLSX.writeFile(wb, 'gigs.xlsx');
     });
