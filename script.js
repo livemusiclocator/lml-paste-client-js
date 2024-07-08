@@ -10,10 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let gigs = [];
 
     // Hide download and Facebook format buttons initially
-    document.getElementById('download-json').style.display = 'none';
-    document.getElementById('download-csv').style.display = 'none';
-    document.getElementById('download-excel').style.display = 'none';
-    toggleFBTextButton.style.display = 'none';
+    document.getElementById('floating-buttons-container').style.display = 'none';
 
     // Add event listeners for download buttons
     document.getElementById('download-json').addEventListener('click', () => {
@@ -116,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('API Response:', gigs);
 
             // Show download and Facebook format buttons
-            document.getElementById('floating-buttons-container').style.display = 'block';
+            document.getElementById('floating-buttons-container').style.display = 'flex';
 
             // Get postcodes, venues, and genres present in the results
             const postcodes = {};
@@ -185,17 +182,25 @@ document.addEventListener('DOMContentLoaded', function () {
     window.filterGigs = function () {
         const filterLocationValue = document.getElementById('filter-location').value;
         const filterGenreValue = document.getElementById('filter-genre').value;
-        const gigs = document.querySelectorAll('.gig');
+        const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
+        const gigElements = document.querySelectorAll('.gig');
 
-        gigs.forEach(gig => {
+        gigElements.forEach(gig => {
             const locationMatch = filterLocationValue === 'All' || gig.dataset.location.includes(filterLocationValue);
             const genreMatch = filterGenreValue === 'All' || gig.dataset.genres.includes(filterGenreValue);
+            const matches = locationMatch && genreMatch;
 
-            if (locationMatch && genreMatch) {
+            if (matches) {
                 gig.style.display = 'block';
             } else {
                 gig.style.display = 'none';
             }
+
+            // Apply data elements filtering
+            gig.querySelector('.gig-name').style.display = elements.includes('name') ? 'block' : 'none';
+            gig.querySelector('.gig-venue').style.display = elements.includes('venue') ? 'block' : 'none';
+            gig.querySelector('.gig-address').style.display = elements.includes('address') ? 'block' : 'none';
+            gig.querySelector('.gig-time').style.display = elements.includes('time') ? 'block' : 'none';
         });
 
         updateVisibleDates();
@@ -207,8 +212,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
         facebookText.value = '';
-
-        const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
 
         const groupedGigs = gigs.reduce((acc, gig) => {
             const date = gig.date;
@@ -233,10 +236,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
 
-                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
-                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
-                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
-                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
+                const name = `<div class="gig-name">${gig.name}</div>`;
+                const venueName = `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>`;
+                const address = `<div class="gig-address">${gig.venue.address}</div>`;
+                const time = `<div class="gig-time">${formatTime(gig.start_time)}</div>`;
 
                 gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);

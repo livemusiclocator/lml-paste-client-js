@@ -1,3 +1,8 @@
+/* Apply Elite font to the entire page */
+body, h1, h2, h3, label, button, select {
+    font-family: 'Elite', monospace;
+}
+
 /* Ensure the floating buttons are spaced out */
 #floating-buttons-container {
     display: flex;
