@@ -21,6 +21,8 @@
             <label for="date_to">Date To:</label>
             <input type="date" id="date_to" name="date_to">
             
+
+
             <fieldset>
                 <legend>Select Data Elements:</legend>
                 <label><input type="checkbox" name="elements" value="name" checked>Name</label>
@@ -61,8 +63,16 @@
         <img src="LML_2_RGB.png" alt="Live Music Locator Logo" class="logo">
     </footer>
 
+    <!-- Excel handling script -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
 <!-- Floating button -->
 <button id="toggle-fb-text" class="floating-button">Formatted for Facebook</button>
+<button id="download-json" class="floating-button">Download as JSON</button>
+<button id="download-csv" class="floating-button">Download as CSV</button>
+<button id="download-excel" class="floating-button">Download as Excel</button>
+
 
 <!-- Floating container -->
 <div id="floating-container" class="floating-container">
