@@ -21,14 +21,6 @@
             <label for="date_to">Date To:</label>
             <input type="date" id="date_to" name="date_to">
 
-            <fieldset>
-                <legend>Select Data Elements:</legend>
-                <label><input type="checkbox" name="elements" value="name" checked>Name</label>
-                <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
-                <label><input type="checkbox" name="elements" value="address" checked>Address</label>
-                <label><input type="checkbox" name="elements" value="time" checked>Time</label>
-            </fieldset>
-
             <button type="submit" class="search-button">Search</button>
         </form>
     </div>
@@ -37,6 +29,13 @@
         <hr class="divider initially-hidden">
 
         <div id="filters-container" style="display: none;" class="yellow-padding">
+            <fieldset>
+                <legend>Select Data Elements:</legend>
+                <label><input type="checkbox" name="elements" value="name" checked>Name</label>
+                <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
+                <label><input type="checkbox" name="elements" value="address" checked>Address</label>
+                <label><input type="checkbox" name="elements" value="time" checked>Time</label>
+            </fieldset>
             <select id="filter-location" onchange="filterGigs()">
                 <option value="All">All Locations</option>
             </select>
@@ -64,11 +63,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
     <!-- Floating buttons container -->
-    <div id="floating-buttons-container">
+    <div id="floating-buttons-container" style="display: none;">
         <button id="download-json" class="floating-button">Download as JSON</button>
         <button id="download-csv" class="floating-button">Download as CSV</button>
         <button id="download-excel" class="floating-button">Download as Excel</button>
-        <button id="toggle-fb-text" class="floating-button" style="display: none;">Formatted for Facebook</button>
+        <button id="toggle-fb-text" class="floating-button">Formatted for Facebook</button>
     </div>
 
     <!-- Floating container -->

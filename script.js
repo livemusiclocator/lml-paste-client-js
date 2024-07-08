@@ -51,7 +51,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('download-excel').addEventListener('click', () => {
         const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(gigs);
+        const ws = XLSX.utils.json_to_sheet(gigs.map(gig => ({
+            Date: gig.date,
+            Name: gig.name,
+            Venue: gig.venue.name,
+            Address: gig.venue.address,
+            Time: gig.start_time
+        })));
         XLSX.utils.book_append_sheet(wb, ws, 'Gigs');
         XLSX.writeFile(wb, 'gigs.xlsx');
     });
@@ -110,10 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('API Response:', gigs);
 
             // Show download and Facebook format buttons
-            document.getElementById('download-json').style.display = 'block';
-            document.getElementById('download-csv').style.display = 'block';
-            document.getElementById('download-excel').style.display = 'block';
-            toggleFBTextButton.style.display = 'block';
+            document.getElementById('floating-buttons-container').style.display = 'block';
 
             // Get postcodes, venues, and genres present in the results
             const postcodes = {};
@@ -205,6 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
         gigList.innerHTML = '';
         facebookText.value = '';
 
+        const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
+
         const groupedGigs = gigs.reduce((acc, gig) => {
             const date = gig.date;
             if (!acc[date]) {
@@ -228,10 +233,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
 
-                const name = `<div class="gig-name">${gig.name}</div>`;
-                const venueName = `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>`;
-                const address = `<div class="gig-address">${gig.venue.address}</div>`;
-                const time = gig.start_time ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
+                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
+                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
+                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
 
                 gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
@@ -310,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const boldMap = {
             'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟',
             'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥', 'S': '𝗦', 'T': '𝗧', 'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫',
-            'Y': '𝗬', 'Z', 'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷',
+            'Y': '𝗬', 'Z': '𝗭', 'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷',
             'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽', 'q': '𝗾', 'r': '𝗿', 's': '𝘀', 't': '𝘁', 'u': '𝘂', 'v': '𝘃',
             'w': '𝘄', 'x': '𝘅', 'y': '𝘆', 'z': '𝘇'
         };

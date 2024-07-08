@@ -6,6 +6,7 @@
     bottom: 20px;
     right: 20px;
     gap: 10px; /* Add space between buttons */
+    display: none; /* Initially hide */
 }
 
 /* General button styles */
