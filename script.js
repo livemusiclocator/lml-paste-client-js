@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const floatingContainer = document.getElementById('floating-container');
     const filtersContainer = document.getElementById('filters-container');
     const resultsContainer = document.getElementById('results-container');
-    const closeButton = document.getElementById('close-float');
+    const floatingButtonsContainer = document.getElementById('floating-buttons-container'); // Add this line
 
     document.getElementById('toggle-fb-text').addEventListener('click', () => {
         console.log('Floating button clicked'); // Debugging statement
@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Display gigs
             displayGigs(gigs);
+
+            // Show the floating buttons container
+            floatingButtonsContainer.style.display = 'flex'; // Add this line
         } catch (error) {
             console.error('Failed to load gigs:', error);
             alert('Failed to load gigs. Please try again later.');
@@ -252,4 +255,52 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         return text.split('').map(char => boldMap[char] || char).join('');
     }
+
+    // Download buttons event listeners
+    document.getElementById('download-json').addEventListener('click', () => {
+        const dataStr = JSON.stringify(gigs, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'gigs.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('download-csv').addEventListener('click', () => {
+        const csvData = gigs.map(gig => ({
+            Date: gig.date,
+            Name: gig.name,
+            Venue: gig.venue.name,
+            Address: gig.venue.address,
+            Time: gig.start_time
+        }));
+        const csvHeaders = 'Date,Name,Venue,Address,Time\n'; // Add this line
+        const csv = csvHeaders + csvData.map(row => Object.values(row).join(',')).join('\n'); // Modify this line
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'gigs.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('download-excel').addEventListener('click', () => {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(gigs.map(gig => ({
+            Date: gig.date,
+            Name: gig.name,
+            Venue: gig.venue.name,
+            Address: gig.venue.address,
+            Time: gig.start_time
+        })));
+        XLSX.utils.book_append_sheet(wb, ws, 'Gigs');
+        XLSX.writeFile(wb, 'gigs.xlsx');
+    });
 });
