@@ -7,73 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const resultsContainer = document.getElementById('results-container');
     const closeButton = document.getElementById('close-float');
 
-    let gigs = [];
-
-    // Hide download and Facebook format buttons initially
-    document.getElementById('floating-buttons-container').style.display = 'none';
-
-    // Add event listeners for download buttons
-    document.getElementById('download-json').addEventListener('click', () => {
-        const dataStr = JSON.stringify(gigs, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'gigs.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-
-    document.getElementById('download-csv').addEventListener('click', () => {
-        const csvData = gigs.map(gig => ({
-            Date: gig.date,
-            Name: gig.name,
-            Venue: gig.venue.name,
-            Address: gig.venue.address,
-            Time: gig.start_time
-        }));
-        const headers = ['Date', 'Name', 'Venue', 'Address', 'Time'];
-        const csv = [headers.join(','), ...csvData.map(row => Object.values(row).join(','))].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'gigs.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-
-    document.getElementById('download-excel').addEventListener('click', () => {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(gigs.map(gig => ({
-            Date: gig.date,
-            Name: gig.name,
-            Venue: gig.venue.name,
-            Address: gig.venue.address,
-            Time: gig.start_time
-        })));
-        XLSX.utils.sheet_add_aoa(ws, [['Date', 'Name', 'Venue', 'Address', 'Time']], { origin: 'A1' });
-        XLSX.utils.book_append_sheet(wb, ws, 'Gigs');
-        XLSX.writeFile(wb, 'gigs.xlsx');
-    });
-
     document.getElementById('toggle-fb-text').addEventListener('click', () => {
         console.log('Floating button clicked'); // Debugging statement
         const button = document.getElementById('toggle-fb-text');
         const container = document.getElementById('floating-container');
 
-        console.log('Button before hide:', button); // Debugging statement
-        console.log('Container before show:', container); // Debugging statement
-
         button.style.display = 'none';
         container.style.display = 'block';
-
-        console.log('Button after hide:', button); // Debugging statement
-        console.log('Container after show:', container); // Debugging statement
     });
 
     document.getElementById('copy-text').addEventListener('click', function () {
@@ -83,23 +23,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('close-float').addEventListener('click', () => {
-        console.log('Close button clicked'); // Debugging statement
         const button = document.getElementById('toggle-fb-text');
         const container = document.getElementById('floating-container');
 
-        console.log('Container before hide:', container); // Debugging statement
-        console.log('Button before show:', button); // Debugging statement
-
         container.style.display = 'none';
         button.style.display = 'block';
-
-        console.log('Container after hide:', container); // Debugging statement
-        console.log('Button after show:', button); // Debugging statement
     });
 
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
         console.log('submit pressed'); // Debugging statement
+        toggleFBTextButton.style.display = 'block';
+        resultsContainer.style.display = 'flex';
+        filtersContainer.style.display = 'flex';
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;
@@ -114,31 +50,20 @@ document.addEventListener('DOMContentLoaded', function () {
             gigs = await response.json();
             console.log('API Response:', gigs);
 
-            // Show download and Facebook format buttons
-            document.getElementById('floating-buttons-container').style.display = 'flex';
-
             // Get postcodes, venues, and genres present in the results
             const postcodes = {};
             const venues = new Set();
-            const genres = {};
+            const genres = new Set();
             gigs.forEach(gig => {
                 const venue = gig.venue || {};
                 const venueAddress = venue.address || '';
                 const venuePostcode = venue.postcode || venueAddress.split(' ').pop();
                 if (!isNaN(venuePostcode)) {
-                    if (!postcodes[venuePostcode]) {
-                        postcodes[venuePostcode] = { suburb: 'Unknown Suburb', count: 0 };
-                    }
-                    postcodes[venuePostcode].count++;
+                    postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
                 }
                 venues.add(venue.name || 'Unknown Venue');
                 if (gig.genre_tags) {
-                    gig.genre_tags.forEach(genre => {
-                        if (!genres[genre]) {
-                            genres[genre] = 0;
-                        }
-                        genres[genre]++;
-                    });
+                    gig.genre_tags.forEach(genre => genres.add(genre));
                 }
             });
 
@@ -148,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             lines.forEach(line => {
                 const [postcode, suburb] = line.split(',');
                 if (postcodes[postcode]) {
-                    postcodes[postcode].suburb = suburb;
+                    postcodes[postcode] = suburb;
                 }
             });
 
@@ -156,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const filterLocation = document.getElementById('filter-location');
             filterLocation.innerHTML = '<option value="All">All Locations</option>';
             Object.keys(postcodes).forEach(postcode => {
-                filterLocation.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode].suburb} (${postcodes[postcode].count})</option>`;
+                filterLocation.innerHTML += `<option value="${postcode}">${postcode} - ${postcodes[postcode]}</option>`;
             });
             venues.forEach(venue => {
                 filterLocation.innerHTML += `<option value="${venue}">${venue}</option>`;
@@ -164,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const filterGenre = document.getElementById('filter-genre');
             filterGenre.innerHTML = '<option value="All">All Genres</option>';
-            Object.keys(genres).forEach(genre => {
-                filterGenre.innerHTML += `<option value="${genre}">${genre} (${genres[genre]})</option>`;
+            genres.forEach(genre => {
+                filterGenre.innerHTML += `<option value="${genre}">${genre}</option>`;
             });
 
             // Display the filters container and results container
@@ -181,28 +106,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Add event listeners to checkboxes
+    const checkboxes = document.querySelectorAll('input[name="elements"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            displayGigs(gigs);
+        });
+    });
+
     window.filterGigs = function () {
         const filterLocationValue = document.getElementById('filter-location').value;
         const filterGenreValue = document.getElementById('filter-genre').value;
-        const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
-        const gigElements = document.querySelectorAll('.gig');
+        const gigs = document.querySelectorAll('.gig');
 
-        gigElements.forEach(gig => {
+        gigs.forEach(gig => {
             const locationMatch = filterLocationValue === 'All' || gig.dataset.location.includes(filterLocationValue);
             const genreMatch = filterGenreValue === 'All' || gig.dataset.genres.includes(filterGenreValue);
-            const matches = locationMatch && genreMatch;
 
-            if (matches) {
+            if (locationMatch && genreMatch) {
                 gig.style.display = 'block';
             } else {
                 gig.style.display = 'none';
             }
-
-            // Apply data elements filtering
-            gig.querySelector('.gig-name').style.display = elements.includes('name') ? 'block' : 'none';
-            gig.querySelector('.gig-venue').style.display = elements.includes('venue') ? 'block' : 'none';
-            gig.querySelector('.gig-address').style.display = elements.includes('address') ? 'block' : 'none';
-            gig.querySelector('.gig-time').style.display = elements.includes('time') ? 'block' : 'none';
         });
 
         updateVisibleDates();
@@ -210,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function displayGigs(gigs) {
+        const elements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
         const gigList = document.getElementById('gig-list');
         const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
@@ -238,10 +164,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
 
-                const name = `<div class="gig-name">${gig.name}</div>`;
-                const venueName = `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>`;
-                const address = `<div class="gig-address">${gig.venue.address}</div>`;
-                const time = `<div class="gig-time">${formatTime(gig.start_time)}</div>`;
+                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
+                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+                const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
+                const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
 
                 gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
@@ -299,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (dateHeader && dateHeader.classList.contains('date-header')) {
                     if (currentHeader !== dateHeader.textContent) {
                         currentHeader = dateHeader.textContent;
-                        facebookText.value += `\n${boldText(currentHeader)}\n\n`;
+                        facebookText.value += `${boldText(currentHeader)}\n\n`;
                     }
                 }
 
@@ -313,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Add footer once
-        facebookText.value += `Data courtesy of Live Music Locator`;
+        facebookText.value += 'Data courtesy of Live Music Locator';
     }
 
     function boldText(text) {
