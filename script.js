@@ -7,6 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const resultsContainer = document.getElementById('results-container');
     const closeButton = document.getElementById('close-float');
 
+    let gigs = [];
+
+    // Hide download buttons initially
+    document.getElementById('download-json').style.display = 'none';
+    document.getElementById('download-csv').style.display = 'none';
+    document.getElementById('download-excel').style.display = 'none';
+
     // Add event listeners for download buttons
     document.getElementById('download-json').addEventListener('click', () => {
         const dataStr = JSON.stringify(gigs, null, 2);
@@ -101,8 +108,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const gigs = await response.json();
+            gigs = await response.json();
             console.log('API Response:', gigs);
+
+            // Show download buttons
+            document.getElementById('download-json').style.display = 'block';
+            document.getElementById('download-csv').style.display = 'block';
+            document.getElementById('download-excel').style.display = 'block';
 
             // Get postcodes, venues, and genres present in the results
             const postcodes = {};

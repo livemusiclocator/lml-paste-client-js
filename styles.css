@@ -1,20 +1,46 @@
-html{
+/* Ensure the floating buttons are spaced out */
+#floating-buttons-container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    gap: 10px; /* Add space between buttons */
+}
+
+/* General button styles */
+.floating-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+/* Additional button styles */
+.floating-button:hover {
+    background-color: #0056b3;
+}
+
+/* Existing styles */
+html {
     background-color: #470537; /*swap color on live music locator website header here*/
 }
 
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #470537; 
+    background-color: #470537;
 }
-
-
 
 .logo {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 100px; 
+    width: 100px;
 }
 
 h1 {
@@ -39,20 +65,16 @@ form input, form select, form fieldset {
 fieldset {
     border: 1px solid #ccc;
     padding: 10px;
-    width: 300px; 
+    width: 300px;
 }
 
-
-
 .date-header {
-    text-align: center; 
+    text-align: center;
 }
 
 #gig-list h2 {
-    text-align: center; 
+    text-align: center;
 }
-
-
 
 .gig {
     border-bottom: 1px solid #ccc;
@@ -60,7 +82,6 @@ fieldset {
     padding: 10px 0;
     text-align: center;
 }
-
 
 .gig-name {
     font-weight: bold;
@@ -86,9 +107,9 @@ fieldset {
 #facebook-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; 
+    align-items: flex-start;
     width: 100%;
-    padding: 0;  
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -96,7 +117,7 @@ fieldset {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; 
+    width: 100%;
     padding: 10px;
     box-sizing: border-box;
 }
@@ -109,7 +130,7 @@ fieldset {
 #gig-list, #facebook-text {
     flex: 1;
     width: 100%;
-    height: 300px; 
+    height: 300px;
     border: 1px solid #ccc;
     padding: 8px;
     box-sizing: border-box;
@@ -117,78 +138,54 @@ fieldset {
 
 #facebook-text {
     width: 100%;
-    height: 200px; 
+    height: 200px;
     resize: none;
     box-sizing: border-box;
 }
-
 
 .divider {
     width: 100%;
     border: 0.5px solid #470537;
     margin: 20px 0;
     display: none; /* Hide the divider */
-
 }
 
 .container {
     display: flex;
     justify-content: center;
     width: 96%;
-    margin-left: 2%; 
-    margin-right: 2%; 
+    margin-left: 2%;
+    margin-right: 2%;
 }
-
-#toggle-fb-text, #results-container, #filters-container {
-    display: none;
-}
-
 
 .halfscreen {
     width: 100%;
 }
-
-
 
 footer {
     text-align: center;
     margin-top: 20px;
 }
 
-.floating-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-
 .floating-container {
     position: fixed;
     bottom: 80px;
     right: 20px;
-    width: 300px;  
+    width: 300px; /* Or other specific size but ensure this matches the desired design */
     max-width: 90%;
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     display: none;
-    box-sizing: border-box; 
+    box-sizing: border-box; /* Makes sure padding does not add to the width */
 }
-
 
 .floating-container textarea {
-    width: 100%; 
-    height: 200px; 
+    width: 100%;
+    height: 200px;
     resize: none;
 }
-
 
 .close-btn {
     position: absolute;
@@ -203,39 +200,39 @@ footer {
 .copy-btn {
     padding: 10px;
     margin-bottom: 5px;
-    margin-top: 10px; 
+    margin-top: 10px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    align-self: flex-end; 
+    align-self: flex-end;
 }
 
-.ts-dark-blue, .divider{
+.ts-dark-blue, .divider {
     background-color: #470537;
     color: #ffffff;
 }
 
-.ms-yellow{
+.ms-yellow {
     background-color: #f3edd2;
 }
 
-.yellow-padding{
+.yellow-padding {
     padding-top: 5%;
 }
 
-.search-button{
-    background-color: #f9f9f9; 
-    color: rgb(0, 0, 0); 
+.search-button {
+    background-color: #f9f9f9;
+    color: rgb(0, 0, 0);
     padding-top: 1%;
     padding-bottom: 1%;
     padding-right: 3%;
     padding-left: 3%;
-    font-size: 20px; 
-    font-family: Arial, sans-serif; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s ease;
 }
