@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtersContainer = document.getElementById('filters-container');
     const resultsContainer = document.getElementById('results-container');
     const floatingButtonsContainer = document.getElementById('floating-buttons-container'); // Add this line
+    const elementsContainer = document.querySelector('fieldset[name="elements-container"]');
 
     document.getElementById('toggle-fb-text').addEventListener('click', () => {
         console.log('Floating button clicked'); // Debugging statement
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleFBTextButton.style.display = 'block';
         resultsContainer.style.display = 'flex';
         filtersContainer.style.display = 'flex';
+        elementsContainer.style.display = 'block'; // Show elements selection container
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;

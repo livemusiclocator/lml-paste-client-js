@@ -21,7 +21,7 @@
             <label for="date_to">Date To:</label>
             <input type="date" id="date_to" name="date_to">
             
-            <fieldset>
+            <fieldset name="elements-container">
                 <legend>Select Data Elements:</legend>
                 <label><input type="checkbox" name="elements" value="name" checked>Name</label>
                 <label><input type="checkbox" name="elements" value="venue" checked>Venue</label>
@@ -64,7 +64,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
     <!-- Floating buttons -->
-    <div id="floating-buttons-container" class="floating-buttons-container" style="display:none;">
+    <div id="floating-buttons-container" class="floating-buttons-container">
         <button id="download-json" class="floating-button">Download as JSON</button>
         <button id="download-csv" class="floating-button">Download as CSV</button>
         <button id="download-excel" class="floating-button">Download as Excel</button>

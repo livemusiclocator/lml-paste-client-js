@@ -1,4 +1,4 @@
-html{
+html {
     background-color: #470537; /*swap color on live music locator website header here*/
 }
 
@@ -130,7 +130,7 @@ fieldset {
     margin-right: 2%; 
 }
 
-#toggle-fb-text, #results-container, #filters-container {
+#toggle-fb-text, #results-container, #filters-container, #floating-buttons-container, fieldset[name="elements-container"] {
     display: none;
 }
 
@@ -160,7 +160,6 @@ footer {
     border-radius: 5px;
     cursor: pointer;
 }
-
 
 .floating-container {
     position: fixed;
