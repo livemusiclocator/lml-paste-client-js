@@ -306,3 +306,4 @@ document.addEventListener('DOMContentLoaded', function () {
         XLSX.writeFile(wb, 'gigs.xlsx');
     });
 });
+
