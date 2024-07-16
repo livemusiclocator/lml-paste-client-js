@@ -31,13 +31,57 @@ document.addEventListener('DOMContentLoaded', function () {
         button.style.display = 'block';
     });
 
+    // Function to format the date and time for iCal
+function formatDateTimeForiCal(date, time) {
+    const dateTime = new Date(`${date}T${time}`);
+    return dateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+}
+
+// Function to create an iCal event
+function createICalEvent(gig) {
+    const startDateTime = formatDateTimeForiCal(gig.date, gig.start_time || '00:00:00');
+    const endDateTime = formatDateTimeForiCal(gig.date, gig.end_time || gig.start_time || '00:00:00');
+    return `
+BEGIN:VEVENT
+SUMMARY:${gig.name}
+DTSTART:${startDateTime}
+DTEND:${endDateTime}
+LOCATION:${gig.venue.name}, ${gig.venue.address}
+DESCRIPTION:${gig.genre_tags.join(', ')}
+END:VEVENT
+    `.trim();
+}
+
+// Function to download iCal file
+document.getElementById('download-ical').addEventListener('click', () => {
+    const icalEvents = gigs.map(createICalEvent).join('\n');
+    const icalContent = `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Live Music Locator//EN
+${icalEvents}
+END:VCALENDAR
+    `.trim();
+
+    const blob = new Blob([icalContent], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gigs.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
-        console.log('submit pressed'); // Debugging statement
+        console.log('submit pressed'); 
         toggleFBTextButton.style.display = 'block';
         resultsContainer.style.display = 'flex';
         filtersContainer.style.display = 'flex';
-        elementsContainer.style.display = 'block'; // Show elements selection container
+        elementsContainer.style.display = 'block'; 
 
         const dateFrom = document.getElementById('date_from').value;
         const dateTo = document.getElementById('date_to').value;
@@ -52,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
             gigs = await response.json();
             console.log('API Response:', gigs);
 
-            // Get postcodes, venues, and genres present in the results
             const postcodes = {};
             const venues = new Set();
             const genres = new Set();
@@ -61,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueAddress = venue.address || '';
                 const venuePostcode = venue.postcode || venueAddress.split(' ').pop();
                 if (!isNaN(venuePostcode)) {
-                    postcodes[venuePostcode] = 'Unknown Suburb'; // default value until we get the actual suburb name
+                    postcodes[venuePostcode] = 'Unknown Suburb'; 
                 }
                 venues.add(venue.name || 'Unknown Venue');
                 if (gig.genre_tags) {
@@ -69,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Load suburb names from local file
             const postcodesCsv = await fetch('vic_postcodes.csv').then(response => response.text());
             const lines = postcodesCsv.split('\n');
             lines.forEach(line => {
@@ -79,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Update the filter dropdown
             const filterLocation = document.getElementById('filter-location');
             filterLocation.innerHTML = '<option value="All">All Locations</option>';
             Object.keys(postcodes).forEach(postcode => {
@@ -95,16 +136,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 filterGenre.innerHTML += `<option value="${genre}">${genre}</option>`;
             });
 
-            // Display the filters container and results container
             document.getElementById('filters-container').style.display = 'flex';
             document.getElementById('results-container').style.display = 'flex';
             document.getElementById('facebook-container').style.display = 'flex';
 
-            // Display gigs
             displayGigs(gigs);
 
-            // Show the floating buttons container
-            floatingButtonsContainer.style.display = 'flex'; // Add this line
+            floatingButtonsContainer.style.display = 'flex'; 
         } catch (error) {
             console.error('Failed to load gigs:', error);
             alert('Failed to load gigs. Please try again later.');
