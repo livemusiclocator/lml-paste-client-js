@@ -17,6 +17,41 @@ document.addEventListener('DOMContentLoaded', function () {
         container.style.display = 'block';
     });
 
+    document.getElementById('download-ical').addEventListener('click', () => {
+        let icalData = `BEGIN:VCALENDAR
+    VERSION:2.0
+    PRODID:-//Your Company//Your Product//EN`;
+    
+        gigs.forEach(gig => {
+            const startTime = gig.start_time ? `T${gig.start_time.replace(':', '')}00Z` : '';
+            const endTime = gig.end_time ? `T${gig.end_time.replace(':', '')}00Z` : '';
+    
+            icalData += `
+    BEGIN:VEVENT
+    UID:${gig.id}@example.com
+    DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+    DTSTART:${gig.date.replace(/-/g, '')}${startTime}
+    ${endTime ? `DTEND:${gig.date.replace(/-/g, '')}${endTime}` : ''}
+    SUMMARY:${gig.name}
+    LOCATION:${gig.venue.name}, ${gig.venue.address}
+    DESCRIPTION:Genre: ${gig.genre_tags.join(', ')}
+    END:VEVENT`;
+        });
+    
+        icalData += `
+    END:VCALENDAR`;
+    
+        const blob = new Blob([icalData], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'gigs.ics';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
     document.getElementById('copy-text').addEventListener('click', function () {
         const textArea = document.getElementById('facebook-text');
         textArea.select();
