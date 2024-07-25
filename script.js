@@ -17,41 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
         container.style.display = 'block';
     });
 
-    document.getElementById('download-ical').addEventListener('click', () => {
-        let icalData = `BEGIN:VCALENDAR
-    VERSION:2.0
-    PRODID:-//Your Company//Your Product//EN`;
-    
-        gigs.forEach(gig => {
-            const startTime = gig.start_time ? `T${gig.start_time.replace(':', '')}00Z` : '';
-            const endTime = gig.end_time ? `T${gig.end_time.replace(':', '')}00Z` : '';
-    
-            icalData += `
-    BEGIN:VEVENT
-    UID:${gig.id}@example.com
-    DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-    DTSTART:${gig.date.replace(/-/g, '')}${startTime}
-    ${endTime ? `DTEND:${gig.date.replace(/-/g, '')}${endTime}` : ''}
-    SUMMARY:${gig.name}
-    LOCATION:${gig.venue.name}, ${gig.venue.address}
-    DESCRIPTION:Genre: ${gig.genre_tags.join(', ')}
-    END:VEVENT`;
-        });
-    
-        icalData += `
-    END:VCALENDAR`;
-    
-        const blob = new Blob([icalData], { type: 'text/calendar' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'gigs.ics';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-
     document.getElementById('copy-text').addEventListener('click', function () {
         const textArea = document.getElementById('facebook-text');
         textArea.select();
@@ -208,17 +173,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
                 const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
                 const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
+                const dataacknowledgment = 'Data courtesy of Live Music Locator: http://lml.live';
 
-                gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}${dataacknowledgment}`;
                 gigList.appendChild(gigDiv);
             });
         }
 
+        //V - Footer removed as data courtesy is printed on every gig now. 
         // Add footer once
-        const footer = document.createElement('div');
-        footer.className = 'gig-footer';
-        footer.textContent = 'Data courtesy of Live Music Locator';
-        gigList.appendChild(footer);
+        // const footer = document.createElement('div');
+        // footer.className = 'gig-footer';
+        // footer.textContent = 'Data courtesy of Live Music Locator';
+        // gigList.appendChild(footer);
 
         updateVisibleDates();
         formatForFacebook();
@@ -273,13 +240,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueName = gig.querySelector('.gig-venue') ? gig.querySelector('.gig-venue').textContent : '';
                 const address = gig.querySelector('.gig-address') ? gig.querySelector('.gig-address').textContent : '';
                 const time = gig.querySelector('.gig-time') ? gig.querySelector('.gig-time').textContent : '';
+                const dataacknowledgment = 'Data courtesy of Live Music Locator: http://lml.live';
 
-                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
+                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n${dataacknowledgment}\n\n`;
             }
         });
 
+        //V- removed as we now have data courtesy printed on every gig
         // Add footer once
-        facebookText.value += 'Data courtesy of Live Music Locator';
+        //facebookText.value += 'Data courtesy of Live Music Locator';
     }
 
     function boldText(text) {
@@ -294,6 +263,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Download buttons event listeners
+    document.getElementById('download-ical').addEventListener('click', () => {
+        let icalData = `BEGIN:VCALENDAR
+    VERSION:2.0
+    PRODID:-//Your Company//Your Product//EN`;
+    
+        gigs.forEach(gig => {
+            const startTime = gig.start_time ? `T${gig.start_time.replace(':', '')}00Z` : '';
+            const endTime = gig.end_time ? `T${gig.end_time.replace(':', '')}00Z` : '';
+    
+            icalData += `
+    BEGIN:VEVENT
+    UID:${gig.id}@example.com
+    DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+    DTSTART:${gig.date.replace(/-/g, '')}${startTime}
+    ${endTime ? `DTEND:${gig.date.replace(/-/g, '')}${endTime}` : ''}
+    SUMMARY:${gig.name}
+    LOCATION:${gig.venue.name}, ${gig.venue.address}
+    DESCRIPTION:Genre: ${gig.genre_tags.join(', ')}
+    END:VEVENT`;
+        });
+    
+        icalData += `
+    END:VCALENDAR`;
+    
+        const blob = new Blob([icalData], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'gigs.ics';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
     document.getElementById('download-json').addEventListener('click', () => {
         const dataStr = JSON.stringify(gigs, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
