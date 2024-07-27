@@ -173,19 +173,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
                 const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
                 const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
-                const dataacknowledgment = 'Data courtesy of Live Music Locator: http://lml.live';
 
-                gigDiv.innerHTML = `${name}${venueName}${address}${time}${dataacknowledgment}`;
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
             });
         }
 
-        //V - Footer removed as data courtesy is printed on every gig now. 
         // Add footer once
-        // const footer = document.createElement('div');
-        // footer.className = 'gig-footer';
-        // footer.textContent = 'Data courtesy of Live Music Locator';
-        // gigList.appendChild(footer);
+        const footer = document.createElement('div');
+        footer.className = 'gig-footer';
+        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="http://lml.live" target="_blank">http://lml.live</a><br>
+        Creative Commons: This work is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>`;
+        gigList.appendChild(footer);
 
         updateVisibleDates();
         formatForFacebook();
@@ -240,15 +239,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const venueName = gig.querySelector('.gig-venue') ? gig.querySelector('.gig-venue').textContent : '';
                 const address = gig.querySelector('.gig-address') ? gig.querySelector('.gig-address').textContent : '';
                 const time = gig.querySelector('.gig-time') ? gig.querySelector('.gig-time').textContent : '';
-                const dataacknowledgment = 'Data courtesy of Live Music Locator: http://lml.live';
 
-                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n${dataacknowledgment}\n\n`;
+                facebookText.value += `${boldText(name)}\n${venueName}\n${address}\n${time}\n\n`;
             }
         });
 
-        //V- removed as we now have data courtesy printed on every gig
         // Add footer once
-        //facebookText.value += 'Data courtesy of Live Music Locator';
+        facebookText.value += 'Data courtesy of Live Music Locator: http://lml.live';
+        facebookText.value += 'Creative Commons: This work is licensed under CC BY 4.0';
     }
 
     function boldText(text) {
