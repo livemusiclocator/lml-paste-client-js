@@ -231,3 +231,20 @@ footer {
     cursor: pointer; 
     transition: background-color 0.3s ease;
 }
+
+/*styles for instruction box*/
+.custom-textbox {
+    position: fixed;
+    top: 2%px; 
+    left: 2%; 
+    width: 32%; 
+    height: 35%; 
+    background-color: rgba(0, 0, 0, 0.5); 
+    color: white;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    z-index: 1000; 
+    resize: none; 
+    pointer-events: none; 
+}
