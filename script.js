@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const floatingButtonsContainer = document.getElementById('floating-buttons-container'); // Add this line
     const elementsContainer = document.querySelector('fieldset[name="elements-container"]');
 
+    //instructional text, feel free to change this appropriately
+    const instruction_text = document.getElementById('instructional-textbox');
+    instruction_text.value = '';
+    instruction_text.value = 'Welcome to Live Music Locator: Gig Guides. You may use this tool to create your own gig guides or just view gigs. Start by selecting the date range for the gigs you are interested in, then press search. :)';
+
     document.getElementById('toggle-fb-text').addEventListener('click', () => {
         console.log('Floating button clicked'); // Debugging statement
         const button = document.getElementById('toggle-fb-text');
@@ -26,14 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('close-float').addEventListener('click', () => {
         const button = document.getElementById('toggle-fb-text');
         const container = document.getElementById('floating-container');
-
         container.style.display = 'none';
         button.style.display = 'block';
     });
 
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
-        console.log('submit pressed'); // Debugging statement
+        //console.log('submit pressed'); // Debugging statement -v commented debugging statement
         toggleFBTextButton.style.display = 'block';
         resultsContainer.style.display = 'flex';
         filtersContainer.style.display = 'flex';
@@ -103,9 +107,16 @@ document.addEventListener('DOMContentLoaded', function () {
             // Display gigs
             displayGigs(gigs);
 
+            //vejiths instruction box
+            const instruction_text = document.getElementById('instructional-textbox');
+            //instruction_text.value = '';
+            instruction_text.value = 'Congrats, you just found your gigs! If you scroll down your gigs should be visible. Next, in the Select Data Elements section you can check or uncheck boxes of data you may or may not be after. You do not have to press search again. If you use the drop downs to select either a location or a genre the gig guide will automatically get rid of irrelavent data. From here you can also download your gig guide in JSON, CSV, Excel and ICal. Also do not worry if you want to share all these gigs on facebook, we have you covered. Just press the formatted for facebook button.';
+
             // Show the floating buttons container
             floatingButtonsContainer.style.display = 'flex'; // Add this line
         } catch (error) {
+            const instruction_text = document.getElementById('instructional-textbox');
+            instruction_text.value = 'Unfortunately, there appeared to be an error with your request.'
             console.error('Failed to load gigs:', error);
             alert('Failed to load gigs. Please try again later.');
         }
@@ -247,6 +258,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add footer once
         facebookText.value += 'Data courtesy of Live Music Locator: http://lml.live';
         facebookText.value += 'Creative Commons: This work is licensed under CC BY 4.0';
+        // const instruction_text = document.getElementById('instructional-textbox');
+        // instruction_text.value = 'Thank you for using our formtted for facebook feature. Click copy to copy gigs to your clipboard.';
     }
 
     function boldText(text) {
@@ -261,6 +274,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Download buttons event listeners
+
+    //
+    //
+    //
+    //
+    //
+    //ICAL is still a work in progress, might need to avoid pushing this live. 
+    //
+    //
+    //
+    //
+    //
     document.getElementById('download-ical').addEventListener('click', () => {
         let icalData = `BEGIN:VCALENDAR
     VERSION:2.0
@@ -303,6 +328,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const a = document.createElement('a');
         a.href = url;
         a.download = 'gigs.json';
+        const instruction_text = document.getElementById('instructional-textbox');
+        instruction_text.value = 'Thank you for downloading JSON!';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -324,6 +351,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const a = document.createElement('a');
         a.href = url;
         a.download = 'gigs.csv';
+        const instruction_text = document.getElementById('instructional-textbox');
+        instruction_text.value = 'Thank you for downloading CSV!';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -341,6 +370,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })));
         XLSX.utils.book_append_sheet(wb, ws, 'Gigs');
         XLSX.writeFile(wb, 'gigs.xlsx');
+        const instruction_text = document.getElementById('instructional-textbox');
+        instruction_text.value = 'Thank you for downloading Excel!';
     });
 });
 
