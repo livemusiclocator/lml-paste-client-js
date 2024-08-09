@@ -193,8 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add footer once
         const footer = document.createElement('div');
         footer.className = 'gig-footer';
-        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="http://lml.live" target="_blank">http://lml.live</a><br>
-        Creative Commons: This work is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>`;
+        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="http://lml.live" target="_blank">http://lml.live</a>'`;
         gigList.appendChild(footer);
 
         updateVisibleDates();
@@ -257,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Add footer once
         facebookText.value += 'Data courtesy of Live Music Locator: http://lml.live';
-        facebookText.value += 'Creative Commons: This work is licensed under CC BY 4.0';
+        //facebookText.value += 'Creative Commons: This work is licensed under CC BY 4.0';
         // const instruction_text = document.getElementById('instructional-textbox');
         // instruction_text.value = 'Thank you for using our formtted for facebook feature. Click copy to copy gigs to your clipboard.';
     }
