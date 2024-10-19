@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const facebookText = document.getElementById('facebook-text');
         gigList.innerHTML = '';
         facebookText.value = '';
-
+    
         const groupedGigs = gigs.reduce((acc, gig) => {
             const date = gig.date;
             if (!acc[date]) {
@@ -165,40 +165,48 @@ document.addEventListener('DOMContentLoaded', function () {
             acc[date].push(gig);
             return acc;
         }, {});
-
+    
         for (const [date, gigs] of Object.entries(groupedGigs)) {
             const dateHeader = document.createElement('h2');
             dateHeader.className = 'date-header';
             dateHeader.dataset.date = date;
             dateHeader.textContent = new Date(date).toLocaleDateString('en-AU', { weekday: 'long', day: '2-digit', month: 'long' });
             gigList.appendChild(dateHeader);
-
+    
             gigs.forEach(gig => {
                 const gigDiv = document.createElement('div');
                 gigDiv.className = 'gig';
                 gigDiv.dataset.date = date;
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
-
-                const name = elements.includes('name') ? `<div class="gig-name">${gig.name}</div>` : '';
-                const venueName = elements.includes('venue') ? `<div class="gig-venue"><a href="${gig.venue.location_url}">${gig.venue.name}</a></div>` : '';
+    
+                // Name with link check
+                const name = elements.includes('name') ?
+                    `<div class="gig-name">${gig.ticketing_url ? `<a href="${gig.ticketing_url}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
+    
+                // Venue link check
+                const venueName = elements.includes('venue') ?
+                    `<div class="gig-venue">${gig.venue.location_url ? `<a href="${gig.venue.location_url}" target="_blank">${gig.venue.name}</a>` : gig.venue.name}</div>` : '';
+    
                 const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
                 const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
-
+    
                 gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
                 gigList.appendChild(gigDiv);
             });
         }
-
+    
         // Add footer once
         const footer = document.createElement('div');
         footer.className = 'gig-footer';
-        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="http://lml.live" target="_blank">http://lml.live</a>'`;
+        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="http://lml.live" target="_blank">http://lml.live</a>`;
         gigList.appendChild(footer);
-
+    
         updateVisibleDates();
         formatForFacebook();
     }
+    
+    
 
     function formatTime(timeString) {
         const [hour, minute] = timeString.split(':');
