@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Name with link check
                 const name = elements.includes('name') ?
-                    `<div class="gig-name">${"https://lml.live/gigs/"+gig.id ? `<a href="${"https://lml.live/gigs/"+gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
+                    `<div class="gig-name">${"https://lml.live/gigs/" + gig.id ? `<a href="${"https://lml.live/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
     
                 // Venue link check
                 const venueName = elements.includes('venue') ?
@@ -190,8 +190,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 const address = elements.includes('address') ? `<div class="gig-address">${gig.venue.address}</div>` : '';
                 const time = gig.start_time && elements.includes('time') ? `<div class="gig-time">${formatTime(gig.start_time)}</div>` : '';
+                const genres = `<div class="gig-genres">Genres: ${gig.genre_tags.join(', ')}</div>`; // Add genres display
     
-                gigDiv.innerHTML = `${name}${venueName}${address}${time}`;
+                gigDiv.innerHTML = `${name}${venueName}${address}${time}${genres}`;
                 gigList.appendChild(gigDiv);
             });
         }
@@ -205,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateVisibleDates();
         formatForFacebook();
     }
+    
     
     
 
