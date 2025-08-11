@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const dateTo = document.getElementById('date_to').value;
 
         const url = `https://api.lml.live/gigs/query?location=melbourne&date_from=${dateFrom}&date_to=${dateTo}`;
-
         try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -182,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Name with link check
                 const name = elements.includes('name') ?
-                    `<div class="gig-name">${"https://lml.live/gigs/" + gig.id ? `<a href="${"https://lml.live/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
+                    `<div class="gig-name">${"https://www.livemusiclocator.com.au/gigs/" + gig.id ? `<a href="${"https://www.livemusiclocator.com.au/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
     
                 // Venue link check
                 const venueName = elements.includes('venue') ?
@@ -200,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add footer once
         const footer = document.createElement('div');
         footer.className = 'gig-footer';
-        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="http://lml.live" target="_blank">http://lml.live</a>`;
+        footer.innerHTML = `Data courtesy of Live Music Locator: <a href="https://www.livemusiclocator.com.au" target="_blank">https://www.livemusiclocator.com.au</a>`;
         gigList.appendChild(footer);
     
         updateVisibleDates();
@@ -265,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Add footer once
-        facebookText.value += 'Data courtesy of Live Music Locator: http://lml.live';
+        facebookText.value += 'Data courtesy of Live Music Locator: https://www.livemusiclocator.com.au';
         //facebookText.value += 'Creative Commons: This work is licensed under CC BY 4.0';
         // const instruction_text = document.getElementById('instructional-textbox');
         // instruction_text.value = 'Thank you for using our formtted for facebook feature. Click copy to copy gigs to your clipboard.';
