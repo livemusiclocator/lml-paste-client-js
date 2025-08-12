@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Name with link check
                 const name = elements.includes('name') ?
-                    `<div class="gig-name">${"https://lml.live/gigs/" + gig.id ? `<a href="${"https://lml.live/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
+                    `<div class="gig-name">${"https://livemusiclocator.com.au/gigs/" + gig.id ? `<a href="${"https://livemusiclocator.com.au/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
     
                 // Venue link check
                 const venueName = elements.includes('venue') ?
