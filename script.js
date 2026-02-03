@@ -181,10 +181,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
     
-                // Name with link check
-                const name = elements.includes('name') ?
-                    `<div class="gig-name">${"https://livemusiclocator.com.au/gigs/" + gig.id ? `<a href="${"https://livemusiclocator.com.au/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
-    
+                const name = elements.includes('name')
+                ? `<div class="gig-name"><a href="https://www.livemusiclocator.com.au/gigs/${gig.id}" target="_blank">${gig.name}</a></div>`
+                : '';
+
                 // Venue link check
                 const venueName = elements.includes('venue') ?
                     `<div class="gig-venue">${gig.venue.location_url ? `<a href="${gig.venue.location_url}" target="_blank">${gig.venue.name}</a>` : gig.venue.name}</div>` : '';
