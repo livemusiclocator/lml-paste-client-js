@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM fully loaded and parsed'); // Debugging statement
+    let gigs = [];
     const searchButton = document.getElementById('search-form');
     const toggleFBTextButton = document.getElementById('toggle-fb-text');
     const floatingContainer = document.getElementById('floating-container');
@@ -180,10 +181,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 gigDiv.dataset.location = `${gig.venue.name} (${gig.venue.postcode})`;
                 gigDiv.dataset.genres = gig.genre_tags.join(',');
     
-                // Name with link check
-                const name = elements.includes('name') ?
-                    `<div class="gig-name">${"https://livemusiclocator.com.au/gigs/" + gig.id ? `<a href="${"https://livemusiclocator.com.au/gigs/" + gig.id}" target="_blank">${gig.name}</a>` : gig.name}</div>` : '';
-    
+                const name = elements.includes('name')
+                ? `<div class="gig-name"><a href="https://www.livemusiclocator.com.au/gigs/${gig.id}" target="_blank">${gig.name}</a></div>`
+                : '';
+
                 // Venue link check
                 const venueName = elements.includes('venue') ?
                     `<div class="gig-venue">${gig.venue.location_url ? `<a href="${gig.venue.location_url}" target="_blank">${gig.venue.name}</a>` : gig.venue.name}</div>` : '';
@@ -295,40 +296,40 @@ document.addEventListener('DOMContentLoaded', function () {
     //
     //
     //
-    document.getElementById('download-ical').addEventListener('click', () => {
-        let icalData = `BEGIN:VCALENDAR
-    VERSION:2.0
-    PRODID:-//Your Company//Your Product//EN`;
+    // document.getElementById('download-ical').addEventListener('click', () => {
+    //     let icalData = `BEGIN:VCALENDAR
+    // VERSION:2.0
+    // PRODID:-//Your Company//Your Product//EN`;
     
-        gigs.forEach(gig => {
-            const startTime = gig.start_time ? `T${gig.start_time.replace(':', '')}00Z` : '';
-            const endTime = gig.end_time ? `T${gig.end_time.replace(':', '')}00Z` : '';
+    //     gigs.forEach(gig => {
+    //         const startTime = gig.start_time ? `T${gig.start_time.replace(':', '')}00Z` : '';
+    //         const endTime = gig.end_time ? `T${gig.end_time.replace(':', '')}00Z` : '';
     
-            icalData += `
-    BEGIN:VEVENT
-    UID:${gig.id}@example.com
-    DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-    DTSTART:${gig.date.replace(/-/g, '')}${startTime}
-    ${endTime ? `DTEND:${gig.date.replace(/-/g, '')}${endTime}` : ''}
-    SUMMARY:${gig.name}
-    LOCATION:${gig.venue.name}, ${gig.venue.address}
-    DESCRIPTION:Genre: ${gig.genre_tags.join(', ')}
-    END:VEVENT`;
-        });
+    //         icalData += `
+    // BEGIN:VEVENT
+    // UID:${gig.id}@example.com
+    // DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+    // DTSTART:${gig.date.replace(/-/g, '')}${startTime}
+    // ${endTime ? `DTEND:${gig.date.replace(/-/g, '')}${endTime}` : ''}
+    // SUMMARY:${gig.name}
+    // LOCATION:${gig.venue.name}, ${gig.venue.address}
+    // DESCRIPTION:Genre: ${gig.genre_tags.join(', ')}
+    // END:VEVENT`;
+    //     });
     
-        icalData += `
-    END:VCALENDAR`;
+    //     icalData += `
+    // END:VCALENDAR`;
     
-        const blob = new Blob([icalData], { type: 'text/calendar' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'gigs.ics';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
+    //     const blob = new Blob([icalData], { type: 'text/calendar' });
+    //     const url = URL.createObjectURL(blob);
+    //     const a = document.createElement('a');
+    //     a.href = url;
+    //     a.download = 'gigs.ics';
+    //     document.body.appendChild(a);
+    //     a.click();
+    //     document.body.removeChild(a);
+    //     URL.revokeObjectURL(url);
+    // });
 
     document.getElementById('download-json').addEventListener('click', () => {
         const dataStr = JSON.stringify(gigs, null, 2);
